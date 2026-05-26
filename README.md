@@ -1,7 +1,7 @@
 # Year Work Portfolio — Algorithm Design & Analysis
 
-> **Author:** Engy Ehab Saad Elsaid
-> **Subject:** Algorithm Design & Analysis
+> **Author:** Menna Magdy Mohamed
+> **Subject:** Computing Algorithm Design & Analysis
 > **Year:** 2025 / 2026
 
 ---
