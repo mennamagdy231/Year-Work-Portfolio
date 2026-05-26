@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Year Work Portfolio — Algorithms</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --bg2: #13161e;
+    --bg3: #1a1e28;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.15);
+    --text: #e8eaf0;
+    --muted: #8890a4;
+    --accent: #5b8af0;
+    --accent2: #a78bfa;
+    --accent3: #34d399;
+    --accent4: #fb923c;
+    --accent5: #f472b6;
+    --code-bg: #0a0c12;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Sora', sans-serif; font-size: 15px; line-height: 1.7; }
+  a { color: var(--accent); text-decoration: none; }
+
+  /* NAV */
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(13,15,20,0.9); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0 2rem; }
+  nav ul { display: flex; gap: 0; list-style: none; overflow-x: auto; }
+  nav ul li a { display: block; padding: 1rem 1.1rem; color: var(--muted); font-size: 13px; font-weight: 600; letter-spacing: 0.03em; transition: color .2s; white-space: nowrap; border-bottom: 2px solid transparent; }
+  nav ul li a:hover, nav ul li a.active { color: var(--text); border-bottom-color: var(--accent); }
+
+  /* HERO */
+  .hero { text-align: center; padding: 5rem 2rem 3rem; background: radial-gradient(ellipse at top, rgba(91,138,240,0.12) 0%, transparent 60%); }
+  .hero h1 { font-size: clamp(2rem,5vw,3.5rem); font-weight: 700; background: linear-gradient(135deg, #e8eaf0, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .hero p { margin-top: .75rem; color: var(--muted); font-size: 1rem; }
+  .badges { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: center; margin-top: 1.5rem; }
+  .badge { background: var(--bg3); border: 1px solid var(--border2); border-radius: 999px; padding: .25rem .85rem; font-size: 12px; font-weight: 600; color: var(--muted); }
+
+  /* SECTIONS */
+  section { max-width: 960px; margin: 0 auto; padding: 3rem 1.5rem 4rem; border-bottom: 1px solid var(--border); }
+  .task-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; }
+  .task-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; color: var(--accent); background: rgba(91,138,240,0.12); border: 1px solid rgba(91,138,240,0.3); border-radius: 6px; padding: .25rem .6rem; }
+  .task-num.t2 { color: var(--accent2); background: rgba(167,139,250,0.1); border-color: rgba(167,139,250,0.3); }
+  .task-num.t3 { color: var(--accent3); background: rgba(52,211,153,0.1); border-color: rgba(52,211,153,0.3); }
+  .task-num.t4 { color: var(--accent4); background: rgba(251,146,60,0.1); border-color: rgba(251,146,60,0.3); }
+  .task-num.t5 { color: var(--accent5); background: rgba(244,114,182,0.1); border-color: rgba(244,114,182,0.3); }
+  .task-header h2 { font-size: 1.5rem; font-weight: 700; }
+
+  /* CARDS */
+  .card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1.5rem; }
+  .card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 1rem; color: var(--text); }
+  .card p { color: var(--muted); font-size: 14px; line-height: 1.7; }
+
+  /* CODE */
+  pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1.25rem; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.6; color: #b0b8d0; margin: 1rem 0; }
+  .kw { color: #a78bfa; }
+  .fn { color: #5b8af0; }
+  .str { color: #34d399; }
+  .cm { color: #4a5270; font-style: italic; }
+  .num { color: #fb923c; }
+
+  /* TABLE */
+  .tbl-wrap { overflow-x: auto; margin: 1rem 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { background: var(--bg3); color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; padding: .65rem 1rem; text-align: left; border-bottom: 1px solid var(--border2); }
+  td { padding: .65rem 1rem; border-bottom: 1px solid var(--border); color: var(--text); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .good { color: var(--accent3); }
+  .bad { color: #f87171; }
+  .med { color: var(--accent4); }
+
+  /* GRID */
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 1rem; }
+  .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 1rem; }
+
+  /* INTERACTIVE */
+  .controls { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; margin-bottom: 1.25rem; }
+  button { background: var(--bg3); border: 1px solid var(--border2); border-radius: var(--radius-sm); color: var(--text); padding: .45rem 1rem; font-family: 'Sora', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .15s; }
+  button:hover { background: rgba(255,255,255,0.08); border-color: var(--accent); }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button.primary:hover { opacity: .85; }
+  input[type=range] { accent-color: var(--accent); flex: 1; min-width: 120px; }
+  input[type=number], input[type=text] { background: var(--code-bg); border: 1px solid var(--border2); border-radius: var(--radius-sm); color: var(--text); padding: .4rem .75rem; font-family: 'JetBrains Mono', monospace; font-size: 13px; width: 100%; }
+  label { font-size: 13px; color: var(--muted); }
+  select { background: var(--bg3); border: 1px solid var(--border2); border-radius: var(--radius-sm); color: var(--text); padding: .4rem .75rem; font-size: 13px; }
+
+  /* VISUALIZER CANVAS */
+  canvas { display: block; width: 100%; border-radius: var(--radius-sm); }
+  #search-canvas { border: 1px solid var(--border); background: var(--code-bg); }
+  #graph-canvas { border: 1px solid var(--border); background: var(--code-bg); }
+  #parallel-canvas { border: 1px solid var(--border); background: var(--code-bg); }
+  #lcs-canvas { border: 1px solid var(--border); background: var(--code-bg); }
+
+  /* STAT ROW */
+  .stats { display: flex; flex-wrap: wrap; gap: 1rem; margin: 1rem 0; }
+  .stat { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: .75rem 1.25rem; }
+  .stat .lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+  .stat .val { font-family: 'JetBrains Mono', monospace; font-size: 1.4rem; font-weight: 600; margin-top: .15rem; }
+
+  /* ADVANTAGE LIST */
+  .adv-list { list-style: none; padding: 0; }
+  .adv-list li { padding: .35rem 0; font-size: 14px; color: var(--muted); display: flex; gap: .5rem; }
+  .adv-list li::before { content: ''; }
+  .adv-list li .ico { flex-shrink: 0; }
+
+  /* SECTION TITLE underline */
+  .sec-title { font-size: 1rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; font-size: 11px; border-bottom: 1px solid var(--border); padding-bottom: .5rem; margin: 1.5rem 0 1rem; }
+
+  /* Output box */
+  .output { background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem 1.25rem; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--accent3); min-height: 3rem; white-space: pre-wrap; word-break: break-all; }
+
+  /* Timeline */
+  .timeline { position: relative; padding-left: 1.5rem; }
+  .timeline::before { content:''; position: absolute; left: 0; top: .5rem; bottom: .5rem; width: 2px; background: var(--border2); border-radius: 2px; }
+  .tl-item { position: relative; margin-bottom: 1.25rem; }
+  .tl-item::before { content:''; position: absolute; left: -1.9rem; top: .45rem; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); border: 2px solid var(--bg2); }
+  .tl-item.t2::before { background: var(--accent2); }
+  .tl-item h4 { font-size: .9rem; font-weight: 600; }
+  .tl-item p { font-size: 13px; color: var(--muted); margin-top: .2rem; }
+
+  /* Chip */
+  .chip { display: inline-block; background: rgba(91,138,240,0.15); border: 1px solid rgba(91,138,240,0.3); border-radius: 6px; padding: .15rem .5rem; font-size: 12px; font-family: 'JetBrains Mono', monospace; color: var(--accent); margin: .15rem; }
+  .chip.g { background: rgba(52,211,153,0.1); border-color: rgba(52,211,153,0.3); color: var(--accent3); }
+  .chip.p { background: rgba(167,139,250,0.1); border-color: rgba(167,139,250,0.3); color: var(--accent2); }
+  .chip.o { background: rgba(251,146,60,0.1); border-color: rgba(251,146,60,0.3); color: var(--accent4); }
+
+  @media (max-width: 600px) {
+    section { padding: 2rem 1rem 3rem; }
+    .task-header h2 { font-size: 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <ul>
+    <li><a href="#task1" class="active">T1 Search</a></li>
+    <li><a href="#task2">T2 Greedy</a></li>
+    <li><a href="#task3">T3 LCS</a></li>
+    <li><a href="#task4">T4 Graphs</a></li>
+    <li><a href="#task5">T5 Parallel</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <h1>Year Work Portfolio</h1>
+  <p>Algorithm Design &amp; Analysis — Five Tasks</p>
+  <div class="badges">
+    <span class="badge">Linear Search</span><span class="badge">Binary Search</span>
+    <span class="badge">Greedy Algorithm</span><span class="badge">Dynamic Programming</span>
+    <span class="badge">Graph Traversal</span><span class="badge">Parallel Computing</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ TASK 1 ═══════════════════════════════════════ -->
+<section id="task1">
+  <div class="task-header">
+    <span class="task-num">TASK 01</span>
+    <h2>Linear Search vs Binary Search</h2>
+  </div>
+
+  <div class="card">
+    <h3>Interactive Comparison</h3>
+    <div class="controls">
+      <label>Array size: <strong id="sz-lbl">20</strong></label>
+      <input type="range" id="sz" min="5" max="50" value="20" oninput="document.getElementById('sz-lbl').textContent=this.value; buildSearchDemo()">
+      <label>Target: <input type="number" id="target" value="37" style="width:80px" onchange="runSearch()"></label>
+      <button class="primary" onclick="runSearch()">▶ Run</button>
+      <button onclick="buildSearchDemo()">Shuffle</button>
+    </div>
+    <canvas id="search-canvas" height="120"></canvas>
+    <div class="stats" id="search-stats" style="margin-top:1rem">
+      <div class="stat"><div class="lbl">Linear comparisons</div><div class="val" id="lin-cmp" style="color:var(--accent4)">—</div></div>
+      <div class="stat"><div class="lbl">Binary comparisons</div><div class="val" id="bin-cmp" style="color:var(--accent3)">—</div></div>
+      <div class="stat"><div class="lbl">Array size (n)</div><div class="val" id="arr-sz">20</div></div>
+      <div class="stat"><div class="lbl">Linear result</div><div class="val" id="lin-res" style="color:var(--muted)">—</div></div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>Python Implementation</h3>
+      <pre><span class="cm"># Linear Search — O(n)</span>
+<span class="kw">def</span> <span class="fn">linear_search</span>(arr, target):
+    comparisons = <span class="num">0</span>
+    <span class="kw">for</span> i, val <span class="kw">in</span> <span class="fn">enumerate</span>(arr):
+        comparisons += <span class="num">1</span>
+        <span class="kw">if</span> val == target:
+            <span class="kw">return</span> i, comparisons
+    <span class="kw">return</span> -<span class="num">1</span>, comparisons
+
+<span class="cm"># Binary Search — O(log n)</span>
+<span class="kw">def</span> <span class="fn">binary_search</span>(arr, target):
+    lo, hi = <span class="num">0</span>, <span class="fn">len</span>(arr) - <span class="num">1</span>
+    comparisons = <span class="num">0</span>
+    <span class="kw">while</span> lo &lt;= hi:
+        mid = (lo + hi) // <span class="num">2</span>
+        comparisons += <span class="num">1</span>
+        <span class="kw">if</span> arr[mid] == target:
+            <span class="kw">return</span> mid, comparisons
+        <span class="kw">elif</span> arr[mid] &lt; target:
+            lo = mid + <span class="num">1</span>
+        <span class="kw">else</span>:
+            hi = mid - <span class="num">1</span>
+    <span class="kw">return</span> -<span class="num">1</span>, comparisons</pre>
+    </div>
+    <div class="card">
+      <h3>Complexity Analysis</h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Metric</th><th>Linear</th><th>Binary</th></tr></thead>
+          <tbody>
+            <tr><td>Best case</td><td class="good">O(1)</td><td class="good">O(1)</td></tr>
+            <tr><td>Worst case</td><td class="bad">O(n)</td><td class="good">O(log n)</td></tr>
+            <tr><td>Average case</td><td class="med">O(n/2)</td><td class="good">O(log n)</td></tr>
+            <tr><td>Space</td><td class="good">O(1)</td><td class="good">O(1)</td></tr>
+            <tr><td>Sorted required?</td><td class="good">No</td><td class="bad">Yes</td></tr>
+            <tr><td>n=1,000,000</td><td class="bad">1,000,000</td><td class="good">20 steps</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-top:1rem">
+    <div class="card">
+      <h3>✅ Linear Search</h3>
+      <p style="margin-bottom:.75rem"><strong>Advantages</strong></p>
+      <ul class="adv-list">
+        <li><span class="ico">→</span> Works on unsorted arrays</li>
+        <li><span class="ico">→</span> Simple to implement</li>
+        <li><span class="ico">→</span> No preprocessing needed</li>
+        <li><span class="ico">→</span> Works on any data structure</li>
+      </ul>
+      <p style="margin-top:.75rem"><strong>Disadvantages</strong></p>
+      <ul class="adv-list">
+        <li><span class="ico">→</span> Slow for large datasets</li>
+        <li><span class="ico">→</span> Checks every element unnecessarily</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>⚡ Binary Search</h3>
+      <p style="margin-bottom:.75rem"><strong>Advantages</strong></p>
+      <ul class="adv-list">
+        <li><span class="ico">→</span> Logarithmic time — extremely fast</li>
+        <li><span class="ico">→</span> Highly efficient for large data</li>
+        <li><span class="ico">→</span> Predictable performance</li>
+      </ul>
+      <p style="margin-top:.75rem"><strong>Disadvantages</strong></p>
+      <ul class="adv-list">
+        <li><span class="ico">→</span> Requires sorted array</li>
+        <li><span class="ico">→</span> Sorting adds O(n log n) overhead</li>
+        <li><span class="ico">→</span> Not suited for linked lists</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ TASK 2 ═══════════════════════════════════════ -->
+<section id="task2">
+  <div class="task-header">
+    <span class="task-num t2">TASK 02</span>
+    <h2>Greedy — Job Sequencing with Deadlines</h2>
+  </div>
+
+  <div class="card">
+    <h3>Problem Explanation</h3>
+    <p>Given <em>n</em> jobs, each with a deadline and a profit, schedule at most one job per time slot to maximise total profit. Each job takes exactly 1 unit of time. A job <em>j</em> can only be scheduled if it is completed by its deadline.</p>
+  </div>
+
+  <div class="card">
+    <h3>Algorithm Steps</h3>
+    <div class="timeline">
+      <div class="tl-item"><h4>1. Sort jobs by profit (descending)</h4><p>Greedy choice: always prefer the highest-paying available job first.</p></div>
+      <div class="tl-item"><h4>2. Find max deadline → create slot array</h4><p>Array of size <code>max_deadline</code> tracks which time slots are filled.</p></div>
+      <div class="tl-item t2"><h4>3. For each job (in sorted order)</h4><p>Find the latest free slot ≤ job's deadline. Assign it there.</p></div>
+      <div class="tl-item t2"><h4>4. Collect scheduled jobs &amp; sum profits</h4><p>Unscheduled jobs are discarded — not profitable enough given deadlines.</p></div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>Python Implementation</h3>
+      <pre><span class="kw">def</span> <span class="fn">job_sequencing</span>(jobs):
+    <span class="cm"># jobs = [(id, deadline, profit), ...]</span>
+    jobs.sort(key=<span class="kw">lambda</span> x: x[<span class="num">2</span>], reverse=<span class="kw">True</span>)
+    max_d = <span class="fn">max</span>(j[<span class="num">1</span>] <span class="kw">for</span> j <span class="kw">in</span> jobs)
+    slots = [<span class="kw">None</span>] * (max_d + <span class="num">1</span>)
+    result, total = [], <span class="num">0</span>
+
+    <span class="kw">for</span> jid, deadline, profit <span class="kw">in</span> jobs:
+        <span class="kw">for</span> s <span class="kw">in</span> <span class="fn">range</span>(<span class="fn">min</span>(max_d, deadline), <span class="num">0</span>, -<span class="num">1</span>):
+            <span class="kw">if</span> slots[s] <span class="kw">is None</span>:
+                slots[s] = jid
+                result.append((s, jid, profit))
+                total += profit
+                <span class="kw">break</span>
+
+    result.sort()  <span class="cm"># sort by slot</span>
+    <span class="kw">return</span> result, total
+
+<span class="cm"># Sample input</span>
+jobs = [
+    (<span class="str">'A'</span>, <span class="num">2</span>, <span class="num">100</span>), (<span class="str">'B'</span>, <span class="num">1</span>, <span class="num">19</span>),
+    (<span class="str">'C'</span>, <span class="num">2</span>, <span class="num">27</span>), (<span class="str">'D'</span>, <span class="num">1</span>, <span class="num">25</span>),
+    (<span class="str">'E'</span>, <span class="num">3</span>, <span class="num">15</span>)
+]
+schedule, profit = <span class="fn">job_sequencing</span>(jobs)
+<span class="cm"># Output: [A, C, E] → profit = 142</span></pre>
+    </div>
+    <div class="card">
+      <h3>Interactive Scheduler</h3>
+      <div style="margin-bottom:1rem;font-size:13px;color:var(--muted)">Click a row to toggle a job, then re-run.</div>
+      <div class="tbl-wrap">
+        <table id="job-table">
+          <thead><tr><th>Job</th><th>Deadline</th><th>Profit</th><th>Status</th></tr></thead>
+          <tbody id="job-body"></tbody>
+        </table>
+      </div>
+      <div class="controls" style="margin-top:1rem">
+        <button class="primary" onclick="runJobSeq()">▶ Schedule</button>
+        <button onclick="resetJobs()">Reset</button>
+      </div>
+      <div class="output" id="job-out">— click Schedule —</div>
+      <div class="stats" style="margin-top:.75rem">
+        <div class="stat"><div class="lbl">Total profit</div><div class="val" id="job-profit" style="color:var(--accent2)">—</div></div>
+        <div class="stat"><div class="lbl">Jobs scheduled</div><div class="val" id="job-count" style="color:var(--accent3)">—</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:1rem">
+    <h3>Why Greedy Works Here — Proof Sketch</h3>
+    <p>At each step we pick the highest-profit unscheduled job that still fits a free slot. If we swapped it with a lower-profit job, total profit could only decrease. The exchange argument guarantees global optimality when profits are independent and each job occupies exactly one slot.</p>
+    <div style="margin-top:.75rem">
+      <span class="chip g">Time: O(n² worst)</span>
+      <span class="chip p">With Union-Find: O(n log n)</span>
+      <span class="chip o">Space: O(n)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ TASK 3 ═══════════════════════════════════════ -->
+<section id="task3">
+  <div class="task-header">
+    <span class="task-num t3">TASK 03</span>
+    <h2>Dynamic Programming — Longest Common Subsequence</h2>
+  </div>
+
+  <div class="card">
+    <h3>Interactive LCS Solver</h3>
+    <div class="controls">
+      <div style="flex:1"><label>String X</label><input type="text" id="lcs-x" value="ABCBDAB" style="margin-top:.3rem"></div>
+      <div style="flex:1"><label>String Y</label><input type="text" id="lcs-y" value="BDCAB" style="margin-top:.3rem"></div>
+      <button class="primary" onclick="solveLCS()" style="align-self:flex-end">▶ Solve</button>
+    </div>
+    <canvas id="lcs-canvas" height="300"></canvas>
+    <div class="stats" style="margin-top:1rem">
+      <div class="stat"><div class="lbl">LCS Length</div><div class="val" id="lcs-len" style="color:var(--accent3)">—</div></div>
+      <div class="stat"><div class="lbl">LCS String</div><div class="val" id="lcs-str" style="color:var(--accent2); font-size:1.1rem">—</div></div>
+      <div class="stat"><div class="lbl">Table cells</div><div class="val" id="lcs-cells" style="color:var(--muted)">—</div></div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>Python Implementation</h3>
+      <pre><span class="kw">def</span> <span class="fn">lcs</span>(X, Y):
+    m, n = <span class="fn">len</span>(X), <span class="fn">len</span>(Y)
+    dp = [[<span class="num">0</span>]*(n+<span class="num">1</span>) <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(m+<span class="num">1</span>)]
+
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, m+<span class="num">1</span>):
+        <span class="kw">for</span> j <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, n+<span class="num">1</span>):
+            <span class="kw">if</span> X[i-<span class="num">1</span>] == Y[j-<span class="num">1</span>]:
+                dp[i][j] = dp[i-<span class="num">1</span>][j-<span class="num">1</span>] + <span class="num">1</span>
+            <span class="kw">else</span>:
+                dp[i][j] = <span class="fn">max</span>(dp[i-<span class="num">1</span>][j],
+                               dp[i][j-<span class="num">1</span>])
+
+    <span class="cm"># Traceback</span>
+    lcs_str, i, j = <span class="str">""</span>, m, n
+    <span class="kw">while</span> i > <span class="num">0</span> <span class="kw">and</span> j > <span class="num">0</span>:
+        <span class="kw">if</span> X[i-<span class="num">1</span>] == Y[j-<span class="num">1</span>]:
+            lcs_str = X[i-<span class="num">1</span>] + lcs_str
+            i -= <span class="num">1</span>; j -= <span class="num">1</span>
+        <span class="kw">elif</span> dp[i-<span class="num">1</span>][j] > dp[i][j-<span class="num">1</span>]:
+            i -= <span class="num">1</span>
+        <span class="kw">else</span>:
+            j -= <span class="num">1</span>
+    <span class="kw">return</span> dp[m][n], lcs_str, dp</pre>
+    </div>
+    <div class="card">
+      <h3>Reflection &amp; Analysis</h3>
+      <div class="sec-title">Implementation notes</div>
+      <p>The DP table avoids recomputing overlapping subproblems. Each cell <code>dp[i][j]</code> depends only on the cell above, left, and diagonally above-left.</p>
+      <div class="sec-title" style="margin-top:1rem">Complexity</div>
+      <div><span class="chip o">Time: O(m×n)</span> <span class="chip g">Space: O(m×n)</span> <span class="chip p">Traceback: O(m+n)</span></div>
+      <div class="sec-title" style="margin-top:1rem">Optimisation</div>
+      <p style="margin-top:.5rem">Space can be reduced to O(min(m,n)) by keeping only two rows of the DP table at a time (Hirschberg's algorithm).</p>
+      <div class="sec-title" style="margin-top:1rem">Real-world applications</div>
+      <ul class="adv-list" style="margin-top:.5rem">
+        <li><span class="ico">→</span> <strong>Git diff</strong> — comparing file versions</li>
+        <li><span class="ico">→</span> <strong>Bioinformatics</strong> — DNA/protein alignment</li>
+        <li><span class="ico">→</span> <strong>Spell checkers</strong> — edit distance basis</li>
+        <li><span class="ico">→</span> <strong>Plagiarism detection</strong> — text similarity</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ TASK 4 ═══════════════════════════════════════ -->
+<section id="task4">
+  <div class="task-header">
+    <span class="task-num t4">TASK 04</span>
+    <h2>Connected &amp; Disconnected Graphs — DFS &amp; BFS</h2>
+  </div>
+
+  <div class="card">
+    <h3>Interactive Graph Traversal</h3>
+    <div class="controls">
+      <button onclick="setGraph('connected')" id="btn-conn" class="primary">Connected Graph</button>
+      <button onclick="setGraph('disconnected')" id="btn-disc">Disconnected Graph</button>
+      <button onclick="startTraversal('bfs')" id="btn-bfs">▶ BFS</button>
+      <button onclick="startTraversal('dfs')" id="btn-dfs">▶ DFS</button>
+      <button onclick="resetGraph()">Reset</button>
+      <label>Speed <input type="range" id="speed" min="100" max="900" value="500" style="width:80px"> </label>
+    </div>
+    <canvas id="graph-canvas" height="320"></canvas>
+    <div class="stats" style="margin-top:1rem">
+      <div class="stat"><div class="lbl">Mode</div><div class="val" id="g-mode" style="font-size:1rem">Connected</div></div>
+      <div class="stat"><div class="lbl">Algorithm</div><div class="val" id="g-algo" style="font-size:1rem">—</div></div>
+      <div class="stat"><div class="lbl">Visit order</div><div class="val" id="g-order" style="font-size:.9rem;color:var(--accent3)">—</div></div>
+      <div class="stat"><div class="lbl">Components</div><div class="val" id="g-comp">—</div></div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>Python — BFS &amp; DFS</h3>
+      <pre><span class="kw">from</span> collections <span class="kw">import</span> deque
+
+<span class="kw">def</span> <span class="fn">bfs</span>(graph, start):
+    visited, order = <span class="fn">set</span>(), []
+    queue = <span class="fn">deque</span>([start])
+    visited.add(start)
+    <span class="kw">while</span> queue:
+        node = queue.popleft()
+        order.append(node)
+        <span class="kw">for</span> nbr <span class="kw">in</span> graph[node]:
+            <span class="kw">if</span> nbr <span class="kw">not in</span> visited:
+                visited.add(nbr)
+                queue.append(nbr)
+    <span class="kw">return</span> order
+
+<span class="kw">def</span> <span class="fn">dfs</span>(graph, start, visited=<span class="kw">None</span>):
+    <span class="kw">if</span> visited <span class="kw">is None</span>: visited = <span class="fn">set</span>()
+    visited.add(start)
+    order = [start]
+    <span class="kw">for</span> nbr <span class="kw">in</span> graph[start]:
+        <span class="kw">if</span> nbr <span class="kw">not in</span> visited:
+            order += <span class="fn">dfs</span>(graph, nbr, visited)
+    <span class="kw">return</span> order
+
+<span class="kw">def</span> <span class="fn">connected_components</span>(graph):
+    visited, count = <span class="fn">set</span>(), <span class="num">0</span>
+    <span class="kw">for</span> node <span class="kw">in</span> graph:
+        <span class="kw">if</span> node <span class="kw">not in</span> visited:
+            <span class="fn">dfs</span>(graph, node, visited)
+            count += <span class="num">1</span>
+    <span class="kw">return</span> count</pre>
+    </div>
+    <div class="card">
+      <h3>BFS vs DFS Comparison</h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Property</th><th>BFS</th><th>DFS</th></tr></thead>
+          <tbody>
+            <tr><td>Data structure</td><td>Queue (FIFO)</td><td>Stack (LIFO) / Recursion</td></tr>
+            <tr><td>Traversal order</td><td>Level by level</td><td>Depth-first branch</td></tr>
+            <tr><td>Shortest path</td><td class="good">Yes (unweighted)</td><td class="bad">No</td></tr>
+            <tr><td>Memory use</td><td class="bad">O(w) — wide graphs</td><td class="good">O(h) — deep graphs</td></tr>
+            <tr><td>Time complexity</td><td>O(V + E)</td><td>O(V + E)</td></tr>
+            <tr><td>Cycle detection</td><td class="med">Yes</td><td class="good">Yes</td></tr>
+            <tr><td>Connected comp.</td><td class="good">Yes</td><td class="good">Yes</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:1rem">
+        <p class="sec-title">Connected vs Disconnected</p>
+        <p style="font-size:14px;color:var(--muted)">A <strong>connected</strong> graph has a path between every pair of vertices. A <strong>disconnected</strong> graph has two or more isolated components. Running BFS/DFS from one node won't visit nodes in other components — we must restart from an unvisited node.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ TASK 5 ═══════════════════════════════════════ -->
+<section id="task5">
+  <div class="task-header">
+    <span class="task-num t5">TASK 05</span>
+    <h2>Parallel vs Distributed Algorithms</h2>
+  </div>
+
+  <div class="card">
+    <h3>Visual Simulation</h3>
+    <div class="controls">
+      <button onclick="simMode('parallel')" id="btn-par" class="primary">Parallel</button>
+      <button onclick="simMode('distributed')" id="btn-dist">Distributed</button>
+      <label>Workers: <strong id="w-lbl">4</strong></label>
+      <input type="range" id="workers" min="2" max="8" value="4" oninput="document.getElementById('w-lbl').textContent=this.value">
+      <button class="primary" onclick="runSim()">▶ Run</button>
+    </div>
+    <canvas id="parallel-canvas" height="260"></canvas>
+    <div class="stats" style="margin-top:1rem">
+      <div class="stat"><div class="lbl">Mode</div><div class="val" id="p-mode" style="font-size:1rem">Parallel</div></div>
+      <div class="stat"><div class="lbl">Elapsed time</div><div class="val" id="p-time" style="color:var(--accent3)">0 ms</div></div>
+      <div class="stat"><div class="lbl">Speedup</div><div class="val" id="p-speedup" style="color:var(--accent2)">—</div></div>
+      <div class="stat"><div class="lbl">Efficiency</div><div class="val" id="p-eff" style="color:var(--accent4)">—</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Python Simulation</h3>
+    <div class="grid2">
+      <pre><span class="cm"># Parallel (shared memory)</span>
+<span class="kw">from</span> multiprocessing <span class="kw">import</span> Pool
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="kw">def</span> <span class="fn">partial_sum</span>(chunk):
+    <span class="kw">return</span> <span class="fn">sum</span>(x**<span class="num">2</span> <span class="kw">for</span> x <span class="kw">in</span> chunk)
+
+data = <span class="fn">list</span>(<span class="fn">range</span>(<span class="num">10_000_000</span>))
+chunks = np.array_split(data, <span class="num">4</span>)
+
+<span class="kw">with</span> <span class="fn">Pool</span>(<span class="num">4</span>) <span class="kw">as</span> pool:
+    results = pool.<span class="fn">map</span>(partial_sum, chunks)
+total = <span class="fn">sum</span>(results)</pre>
+      <pre><span class="cm"># Distributed (message passing)</span>
+<span class="kw">from</span> mpi4py <span class="kw">import</span> MPI
+comm = MPI.COMM_WORLD
+rank = comm.Get_rank()
+size = comm.Get_size()
+
+data = <span class="kw">None</span>
+<span class="kw">if</span> rank == <span class="num">0</span>:  <span class="cm"># master</span>
+    data = scatter_data(size)
+chunk = comm.<span class="fn">scatter</span>(data, root=<span class="num">0</span>)
+
+local_sum = <span class="fn">sum</span>(x**<span class="num">2</span> <span class="kw">for</span> x <span class="kw">in</span> chunk)
+total = comm.<span class="fn">reduce</span>(local_sum,
+               op=MPI.SUM, root=<span class="num">0</span>)</pre>
+    </div>
+  </div>
+
+  <div class="tbl-wrap" style="margin-top:1.5rem">
+    <table>
+      <thead>
+        <tr><th>Dimension</th><th>Parallel</th><th>Distributed</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Architecture</strong></td><td>Shared memory (SMP/multicore)</td><td>Independent nodes via network</td></tr>
+        <tr><td><strong>Communication</strong></td><td>Direct memory access</td><td>Message passing (MPI, RPC, etc.)</td></tr>
+        <tr><td><strong>Execution model</strong></td><td>Multiple threads/processes on one machine</td><td>Multiple machines, autonomous execution</td></tr>
+        <tr><td><strong>Synchronisation</strong></td><td>Mutexes, semaphores, barriers</td><td>Consensus protocols, message ACKs</td></tr>
+        <tr><td><strong>Fault tolerance</strong></td><td class="bad">Single point of failure (1 machine)</td><td class="good">Redundant nodes — tolerates partial failure</td></tr>
+        <tr><td><strong>Scalability</strong></td><td class="med">Limited by CPU core count</td><td class="good">Horizontally scalable (add machines)</td></tr>
+        <tr><td><strong>Latency</strong></td><td class="good">Nanoseconds (cache/RAM)</td><td class="bad">Milliseconds (network)</td></tr>
+        <tr><td><strong>Programming model</strong></td><td>OpenMP, pthreads, Python multiprocessing</td><td>MPI, MapReduce, Apache Spark</td></tr>
+        <tr><td><strong>Real-world use</strong></td><td>Image rendering, GPU compute, sorting</td><td>Web search, ML training, blockchain</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer style="text-align:center;padding:2rem 1rem;color:var(--muted);font-size:13px;border-top:1px solid var(--border)">
+  Year Work Portfolio — Algorithm Design &amp; Analysis
+</footer>
+
+<script>
+// ─── TASK 1: Search Visualiser ─────────────────────────────────────────
+let searchArr = [];
+function buildSearchDemo() {
+  const n = parseInt(document.getElementById('sz').value);
+  document.getElementById('arr-sz').textContent = n;
+  searchArr = [...new Set(Array.from({length:n},()=>Math.floor(Math.random()*100)+1))].slice(0,n);
+  searchArr.sort((a,b)=>a-b);
+  drawSearch([], [], -1, -1);
+  document.getElementById('lin-cmp').textContent = '—';
+  document.getElementById('bin-cmp').textContent = '—';
+  document.getElementById('lin-res').textContent = '—';
+}
+
+function runSearch() {
+  const target = parseInt(document.getElementById('target').value);
+  if (!searchArr.length) buildSearchDemo();
+
+  let linCmp=0, linIdx=-1;
+  const linVis=[];
+  for(let i=0;i<searchArr.length;i++){
+    linCmp++;linVis.push(i);
+    if(searchArr[i]===target){linIdx=i;break;}
+  }
+
+  let lo=0,hi=searchArr.length-1,binCmp=0,binIdx=-1;
+  const binVis=[];
+  while(lo<=hi){
+    const mid=Math.floor((lo+hi)/2);
+    binCmp++;binVis.push(mid);
+    if(searchArr[mid]===target){binIdx=mid;break;}
+    else if(searchArr[mid]<target) lo=mid+1;
+    else hi=mid-1;
+  }
+
+  document.getElementById('lin-cmp').textContent = linCmp;
+  document.getElementById('bin-cmp').textContent = binCmp;
+  document.getElementById('lin-res').textContent = linIdx>=0 ? `idx ${linIdx}` : 'Not found';
+  drawSearch(linVis, binVis, linIdx, binIdx, target);
+}
+
+function drawSearch(linVis, binVis, linIdx, binIdx, target) {
+  const canvas = document.getElementById('search-canvas');
+  const W = canvas.offsetWidth; canvas.width = W; canvas.height = 120;
+  const ctx = canvas.getContext('2d');
+  const n = searchArr.length;
+  if(!n) return;
+  const cw = W/n, bw = cw*0.8;
+
+  ctx.clearRect(0,0,W,120);
+  searchArr.forEach((v,i)=>{
+    const x = i*cw + (cw-bw)/2;
+    let fill='#1a1e28';
+    if(i===linIdx||i===binIdx) fill='#34d399';
+    else if(linVis.includes(i)&&binVis.includes(i)) fill='#a78bfa';
+    else if(linVis.includes(i)) fill='#fb923c44';
+    else if(binVis.includes(i)) fill='#5b8af044';
+    ctx.fillStyle=fill;
+    ctx.strokeStyle='#2a2e3a';
+    ctx.lineWidth=1;
+    ctx.beginPath();ctx.roundRect(x,20,bw,55,3);ctx.fill();ctx.stroke();
+    ctx.fillStyle= (i===linIdx||i===binIdx) ? '#0d0f14' : '#8890a4';
+    ctx.font=`${Math.max(9,Math.min(12,bw-4))}px JetBrains Mono`;
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(v,i*cw+cw/2,47);
+  });
+  ctx.fillStyle='#4a5270';ctx.font='11px Sora';ctx.textAlign='left';
+  ctx.fillText('🟠 Linear  🟣 Both  🟢 Found',8,108);
+}
+
+buildSearchDemo();
+
+// ─── TASK 2: Job Sequencing ────────────────────────────────────────────
+let jobData = [
+  {id:'A',d:2,p:100,on:true},{id:'B',d:1,p:19,on:true},
+  {id:'C',d:2,p:27,on:true},{id:'D',d:1,p:25,on:true},{id:'E',d:3,p:15,on:true}
+];
+
+function renderJobTable(){
+  const tb=document.getElementById('job-body');
+  tb.innerHTML='';
+  jobData.forEach((j,i)=>{
+    const tr=document.createElement('tr');
+    tr.style.cursor='pointer';
+    tr.style.opacity=j.on?'1':'0.4';
+    tr.innerHTML=`<td><strong>${j.id}</strong></td><td>${j.d}</td><td>$${j.p}</td><td>${j.on?'✅':'❌'}</td>`;
+    tr.onclick=()=>{jobData[i].on=!jobData[i].on;renderJobTable();document.getElementById('job-out').textContent='— click Schedule —';};
+    tb.appendChild(tr);
+  });
+}
+
+function runJobSeq(){
+  const active=jobData.filter(j=>j.on).map(j=>({...j}));
+  active.sort((a,b)=>b.p-a.p);
+  const maxD=Math.max(...active.map(j=>j.d));
+  const slots=new Array(maxD+1).fill(null);
+  const sched=[];let total=0;
+  active.forEach(({id,d,p})=>{
+    for(let s=Math.min(maxD,d);s>=1;s--){
+      if(!slots[s]){slots[s]={id,p};sched.push({slot:s,id,p});total+=p;break;}
+    }
+  });
+  sched.sort((a,b)=>a.slot-b.slot);
+  const lines=sched.map(s=>`Slot ${s.slot}: Job ${s.id}  ($${s.p})`).join('\n');
+  document.getElementById('job-out').textContent=lines+`\n──────────────\nTotal: $${total}`;
+  document.getElementById('job-profit').textContent='$'+total;
+  document.getElementById('job-count').textContent=sched.length;
+}
+
+function resetJobs(){jobData.forEach(j=>j.on=true);renderJobTable();document.getElementById('job-out').textContent='— click Schedule —';document.getElementById('job-profit').textContent='—';document.getElementById('job-count').textContent='—';}
+renderJobTable();
+
+// ─── TASK 3: LCS Solver ───────────────────────────────────────────────
+function solveLCS(){
+  const X=document.getElementById('lcs-x').value.toUpperCase();
+  const Y=document.getElementById('lcs-y').value.toUpperCase();
+  const m=X.length,n=Y.length;
+  const dp=Array.from({length:m+1},()=>new Array(n+1).fill(0));
+  for(let i=1;i<=m;i++)for(let j=1;j<=n;j++){
+    if(X[i-1]===Y[j-1]) dp[i][j]=dp[i-1][j-1]+1;
+    else dp[i][j]=Math.max(dp[i-1][j],dp[i][j-1]);
+  }
+  let s='',i=m,j=n;
+  while(i>0&&j>0){
+    if(X[i-1]===Y[j-1]){s=X[i-1]+s;i--;j--;}
+    else if(dp[i-1][j]>dp[i][j-1])i--;else j--;
+  }
+  document.getElementById('lcs-len').textContent=dp[m][n];
+  document.getElementById('lcs-str').textContent=s||'(none)';
+  document.getElementById('lcs-cells').textContent=(m+1)*(n+1);
+  drawLCS(X,Y,dp,s);
+}
+
+function drawLCS(X,Y,dp,lcs){
+  const canvas=document.getElementById('lcs-canvas');
+  const W=canvas.offsetWidth;canvas.width=W;
+  const m=X.length,n=Y.length;
+  const cell=Math.min(38,Math.floor((W-60)/(n+1)));
+  const H=Math.max(300,(m+2)*cell+60);canvas.height=H;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,W,H);
+  const ox=50,oy=40;
+
+  // find path cells
+  const path=new Set();
+  let pi=m,pj=n;
+  while(pi>0&&pj>0){
+    if(X[pi-1]===Y[pj-1]){path.add(`${pi},${pj}`);pi--;pj--;}
+    else if(dp[pi-1][pj]>dp[pi][pj-1])pi--;else pj--;
+  }
+
+  const maxVal=dp[m][n]||1;
+  for(let i=0;i<=m;i++)for(let j=0;j<=n;j++){
+    const x=ox+j*cell,y=oy+i*cell,v=dp[i][j];
+    const isPath=path.has(`${i},${j}`);
+    ctx.fillStyle=isPath?'#1e3a2f': (v>0?`rgba(91,138,240,${0.08+0.25*v/maxVal})`:'#13161e');
+    ctx.strokeStyle=isPath?'#34d399':'#2a2e3a';
+    ctx.lineWidth=isPath?1.5:0.5;
+    ctx.beginPath();ctx.roundRect(x+1,y+1,cell-2,cell-2,3);ctx.fill();ctx.stroke();
+    ctx.fillStyle=isPath?'#34d399':'#8890a4';
+    ctx.font=`${Math.max(9,cell-12)}px JetBrains Mono`;
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(v,x+cell/2,y+cell/2);
+  }
+  ctx.fillStyle='#5b8af0';ctx.font='bold 13px JetBrains Mono';ctx.textAlign='center';
+  for(let j=0;j<n;j++){ctx.fillText(Y[j],ox+j*cell+cell+cell/2,oy-14);}
+  ctx.fillStyle='#a78bfa';
+  for(let i=0;i<m;i++){ctx.textAlign='right';ctx.fillText(X[i],ox-8,oy+i*cell+cell+cell/2);}
+}
+
+solveLCS();
+
+// ─── TASK 4: Graph Traversal ───────────────────────────────────────────
+const GRAPHS = {
+  connected: {
+    nodes:[
+      {id:0,x:.15,y:.25,lbl:'A'},{id:1,x:.5,y:.08,lbl:'B'},{id:2,x:.82,y:.25,lbl:'C'},
+      {id:3,x:.3,y:.65,lbl:'D'},{id:4,x:.68,y:.65,lbl:'E'},{id:5,x:.5,y:.88,lbl:'F'}
+    ],
+    edges:[[0,1],[0,3],[1,2],[1,4],[2,4],[3,4],[3,5],[4,5]],
+    adj:{0:[1,3],1:[0,2,4],2:[1,4],3:[0,4,5],4:[1,2,3,5],5:[3,4]},
+    components:1
+  },
+  disconnected: {
+    nodes:[
+      {id:0,x:.1,y:.3,lbl:'A'},{id:1,x:.28,y:.12,lbl:'B'},{id:2,x:.28,y:.5,lbl:'C'},
+      {id:3,x:.55,y:.3,lbl:'D'},{id:4,x:.75,y:.15,lbl:'E'},{id:5,x:.75,y:.5,lbl:'F'},
+      {id:6,x:.9,y:.8,lbl:'G'}
+    ],
+    edges:[[0,1],[0,2],[1,2],[3,4],[3,5],[4,5]],
+    adj:{0:[1,2],1:[0,2],2:[0,1],3:[4,5],4:[3,5],5:[3,4],6:[]},
+    components:3
+  }
+};
+
+let curGraph='connected', nodeColors={}, traversalTimer=null, traversalOrder=[];
+
+function setGraph(type){
+  curGraph=type;
+  document.getElementById('btn-conn').className=type==='connected'?'primary':'';
+  document.getElementById('btn-disc').className=type==='disconnected'?'primary':'';
+  document.getElementById('g-mode').textContent=type==='connected'?'Connected':'Disconnected';
+  document.getElementById('g-comp').textContent=GRAPHS[type].components;
+  resetGraph();
+}
+
+function resetGraph(){
+  if(traversalTimer) clearInterval(traversalTimer);
+  nodeColors={};traversalOrder=[];
+  document.getElementById('g-algo').textContent='—';
+  document.getElementById('g-order').textContent='—';
+  drawGraph();
+}
+
+function drawGraph(highlight={}){
+  const canvas=document.getElementById('graph-canvas');
+  const rect=canvas.getBoundingClientRect();const W=Math.floor(rect.width)||800;canvas.width=W;canvas.height=320;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,W,320);
+  const g=GRAPHS[curGraph];
+
+  g.edges.forEach(([a,b])=>{
+    const na=g.nodes[a],nb=g.nodes[b];
+    ctx.strokeStyle='rgba(255,255,255,0.35)';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(na.x*W,na.y*310+5);ctx.lineTo(nb.x*W,nb.y*310+5);ctx.stroke();
+  });
+
+  g.nodes.forEach(n=>{
+    const x=n.x*W,y=n.y*310+5;
+    const state=nodeColors[n.id]||'idle';
+    const fill=state==='visited'?'#34d399':state==='current'?'#5b8af0':'#1a1e28';
+    const stroke=state==='visited'?'#34d399':state==='current'?'#5b8af0':'#2a2e3a';
+    ctx.fillStyle=fill;ctx.strokeStyle=stroke;ctx.lineWidth=2;
+    ctx.beginPath();ctx.arc(x,y,18,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.fillStyle=state==='idle'?'#8890a4':'#0d0f14';
+    ctx.font='bold 13px Sora';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(n.lbl,x,y);
+  });
+}
+
+function startTraversal(algo){
+  if(traversalTimer) clearInterval(traversalTimer);
+  nodeColors={};const visited=new Set();
+  const g=GRAPHS[curGraph];
+  const order=[];const queue=[];
+
+  if(algo==='bfs'){
+    document.getElementById('g-algo').textContent='BFS — Queue';
+    g.nodes.forEach(start=>{
+      if(!visited.has(start.id)){
+        const q=[start.id];visited.add(start.id);
+        while(q.length){
+          const cur=q.shift();order.push(cur);
+          g.adj[cur].forEach(nb=>{if(!visited.has(nb)){visited.add(nb);q.push(nb);}});
+        }
+      }
+    });
+  } else {
+    document.getElementById('g-algo').textContent='DFS — Stack';
+    function dfsR(id){if(visited.has(id))return;visited.add(id);order.push(id);g.adj[id].forEach(dfsR);}
+    g.nodes.forEach(n=>{if(!visited.has(n.id))dfsR(n.id);});
+  }
+
+  let step=0;
+  traversalTimer=setInterval(()=>{
+    if(step>0) nodeColors[order[step-1]]='visited';
+    if(step<order.length){
+      nodeColors[order[step]]='current';
+      drawGraph();
+      const labels=order.slice(0,step+1).map(i=>g.nodes[i].lbl);
+      document.getElementById('g-order').textContent=labels.join(' → ');
+      step++;
+    } else {
+      clearInterval(traversalTimer);drawGraph();
+    }
+  },1000-parseInt(document.getElementById('speed').value));
+}
+
+window.addEventListener('load',()=>setGraph('connected'));
+
+// ─── TASK 5: Parallel/Distributed Sim ─────────────────────────────────
+let simType='parallel',simTimer=null,simStart=0;
+
+function simMode(type){
+  simType=type;
+  document.getElementById('btn-par').className=type==='parallel'?'primary':'';
+  document.getElementById('btn-dist').className=type==='distributed'?'primary':'';
+  document.getElementById('p-mode').textContent=type==='parallel'?'Parallel':'Distributed';
+  document.getElementById('p-time').textContent='0 ms';
+  document.getElementById('p-speedup').textContent='—';
+  document.getElementById('p-eff').textContent='—';
+  drawSim([]);
+}
+
+function drawSim(progress){
+  const canvas=document.getElementById('parallel-canvas');
+  const W=canvas.offsetWidth;canvas.width=W;canvas.height=260;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,W,260);
+  const workers=parseInt(document.getElementById('workers').value);
+  const barH=28,gap=10,ox=150;
+  const bw=W-ox-20;
+
+  for(let i=0;i<workers;i++){
+    const y=20+i*(barH+gap);
+    ctx.fillStyle='#1a1e28';ctx.strokeStyle='#2a2e3a';ctx.lineWidth=1;
+    ctx.beginPath();ctx.roundRect(ox,y,bw,barH,4);ctx.fill();ctx.stroke();
+    const p=progress[i]||0;
+    if(p>0){
+      const fillColor=simType==='parallel'?'#5b8af0':'#a78bfa';
+      ctx.fillStyle=fillColor+'88';
+      ctx.beginPath();ctx.roundRect(ox+1,y+1,Math.max(0,(bw-2)*p),barH-2,3);ctx.fill();
+      if(p>=1){ctx.fillStyle=fillColor;ctx.beginPath();ctx.roundRect(ox+1,y+1,bw-2,barH-2,3);ctx.fill();}
+    }
+    ctx.fillStyle='#8890a4';ctx.font='12px Sora';ctx.textAlign='right';ctx.textBaseline='middle';
+    if(simType==='parallel') ctx.fillText(`Core ${i+1}`,ox-10,y+barH/2);
+    else ctx.fillText(`Node ${i+1}`,ox-10,y+barH/2);
+    ctx.fillStyle='#e8eaf0';ctx.textAlign='left';
+    if(p>0) ctx.fillText(`${Math.round(p*100)}%`,ox+8,y+barH/2);
+  }
+
+  if(simType==='distributed'){
+    const msgY=workers*(barH+gap)+30;
+    ctx.fillStyle='#4a5270';ctx.font='11px Sora';ctx.textAlign='center';
+    ctx.fillText('↕ Network communication overhead',W/2,msgY+10);
+  }
+}
+
+function runSim(){
+  if(simTimer) clearInterval(simTimer);
+  const workers=parseInt(document.getElementById('workers').value);
+  const overhead=simType==='distributed'?1.4:1.0;
+  const totalSteps=60;
+  const progress=new Array(workers).fill(0);
+  simStart=performance.now();
+  let tick=0;
+
+  simTimer=setInterval(()=>{
+    tick++;
+    for(let i=0;i<workers;i++){
+      const lag=simType==='distributed'? (i*0.05):0;
+      progress[i]=Math.min(1, (tick/(totalSteps*overhead))-lag);
+    }
+    drawSim(progress);
+    const elapsed=Math.round(performance.now()-simStart);
+    document.getElementById('p-time').textContent=elapsed+' ms';
+    if(tick>=Math.round(totalSteps*overhead)){
+      clearInterval(simTimer);
+      const totalElapsed=Math.round(performance.now()-simStart);
+      const sequential=totalElapsed*workers/1000;
+      const speedup=(sequential/totalElapsed*1000).toFixed(2);
+      const eff=(speedup/workers*100).toFixed(0);
+      document.getElementById('p-time').textContent=totalElapsed+' ms';
+      document.getElementById('p-speedup').textContent=speedup+'×';
+      document.getElementById('p-eff').textContent=eff+'%';
+    }
+  },30);
+}
+
+simMode('parallel');
+
+// Nav active state
+window.addEventListener('scroll',()=>{
+  const sections=['task1','task2','task3','task4','task5'];
+  let active='task1';
+  sections.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el&&window.scrollY+100>=el.offsetTop) active=id;
+  });
+  document.querySelectorAll('nav a').forEach(a=>{
+    a.classList.toggle('active',a.getAttribute('href')==='#'+active);
+  });
+});
+</script>
+</body>
+</html>
