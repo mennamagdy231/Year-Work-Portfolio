@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task 3 — Longest Common Subsequence (LCS)</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0d0f14;--bg2:#13161e;--bg3:#1a1e28;--border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.15);--text:#e8eaf0;--muted:#8890a4;--accent:#34d399;--accent2:#a78bfa;--accent3:#5b8af0;--accent4:#fb923c;--code-bg:#0a0c12;--radius:12px;--radius-sm:8px;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Sora',sans-serif;font-size:15px;line-height:1.7;}
+  .hero{text-align:center;padding:3.5rem 2rem 2.5rem;background:radial-gradient(ellipse at top,rgba(52,211,153,0.12) 0%,transparent 60%);}
+  .hero h1{font-size:clamp(1.6rem,4vw,2.8rem);font-weight:700;background:linear-gradient(135deg,#e8eaf0,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .hero p{margin-top:.5rem;color:var(--muted);font-size:.95rem;}
+  .task-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--accent);background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.3);border-radius:6px;padding:.2rem .6rem;margin-bottom:.75rem;}
+  section{max-width:960px;margin:0 auto;padding:2rem 1.5rem 3rem;}
+  .card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.5rem;}
+  .card h3{font-size:1rem;font-weight:600;margin-bottom:1rem;color:var(--text);}
+  .card p{color:var(--muted);font-size:14px;line-height:1.7;}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1.25rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6;color:#b0b8d0;margin:.75rem 0;}
+  .kw{color:#a78bfa;}.fn{color:#5b8af0;}.str{color:#34d399;}.cm{color:#4a5270;font-style:italic;}.num{color:#fb923c;}
+  .tbl-wrap{overflow-x:auto;margin:1rem 0;}
+  table{width:100%;border-collapse:collapse;font-size:14px;}
+  th{background:var(--bg3);color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.05em;padding:.65rem 1rem;text-align:left;border-bottom:1px solid var(--border2);}
+  td{padding:.65rem 1rem;border-bottom:1px solid var(--border);color:var(--text);}
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:rgba(255,255,255,0.02);}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;}
+  .controls{display:flex;flex-wrap:wrap;gap:.75rem;align-items:flex-end;margin-bottom:1.25rem;}
+  .field{display:flex;flex-direction:column;gap:.3rem;flex:1;}
+  button{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);padding:.45rem 1rem;font-family:'Sora',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;}
+  button:hover{background:rgba(255,255,255,0.08);border-color:var(--accent);}
+  button.primary{background:var(--accent);border-color:var(--accent);color:#0d0f14;}
+  button.primary:hover{opacity:.85;}
+  input[type=text]{background:var(--code-bg);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);padding:.45rem .75rem;font-family:'JetBrains Mono',monospace;font-size:14px;width:100%;letter-spacing:.1em;}
+  label{font-size:13px;color:var(--muted);}
+  .stats{display:flex;flex-wrap:wrap;gap:1rem;margin:1rem 0;}
+  .stat{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.75rem 1.25rem;}
+  .stat .lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+  .stat .val{font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:600;margin-top:.15rem;}
+  canvas{display:block;width:100%;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--code-bg);}
+  .chip{display:inline-block;border-radius:6px;padding:.15rem .55rem;font-size:12px;font-family:'JetBrains Mono',monospace;margin:.15rem;}
+  .chip.g{background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);color:var(--accent);}
+  .chip.p{background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.3);color:var(--accent2);}
+  .chip.b{background:rgba(91,138,240,0.15);border:1px solid rgba(91,138,240,0.3);color:var(--accent3);}
+  .chip.o{background:rgba(251,146,60,0.1);border:1px solid rgba(251,146,60,0.3);color:var(--accent4);}
+  .adv-list{list-style:none;padding:0;}
+  .adv-list li{padding:.35rem 0;font-size:14px;color:var(--muted);display:flex;gap:.5rem;}
+  .sec-title{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;border-bottom:1px solid var(--border);padding-bottom:.4rem;margin:1.25rem 0 .75rem;}
+  .highlight-box{background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.2);border-radius:var(--radius-sm);padding:1rem 1.25rem;font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:600;color:var(--accent);text-align:center;letter-spacing:.2em;}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="task-badge">TASK 03</div>
+  <h1>Longest Common Subsequence</h1>
+  <p>Dynamic Programming — implementation, reflection, complexity &amp; applications</p>
+</div>
+
+<section>
+
+  <!-- Interactive Solver -->
+  <div class="card">
+    <h3>Interactive LCS Solver — DP Table Visualiser</h3>
+    <div class="controls">
+      <div class="field">
+        <label>String X</label>
+        <input type="text" id="lcs-x" value="ABCBDAB" maxlength="14">
+      </div>
+      <div class="field">
+        <label>String Y</label>
+        <input type="text" id="lcs-y" value="BDCAB" maxlength="14">
+      </div>
+      <button class="primary" onclick="solveLCS()" style="align-self:flex-end;padding:.5rem 1.25rem">▶ Solve</button>
+    </div>
+    <canvas id="lcs-canvas" height="320"></canvas>
+    <p style="font-size:12px;color:var(--muted);margin-top:.5rem;">Green cells = path taken during traceback to reconstruct the LCS.</p>
+    <div class="stats" style="margin-top:.75rem">
+      <div class="stat"><div class="lbl">LCS Length</div><div class="val" id="lcs-len" style="color:var(--accent)">—</div></div>
+      <div class="stat"><div class="lbl">LCS String</div><div class="val" id="lcs-str" style="font-size:1.1rem;color:var(--accent2)">—</div></div>
+      <div class="stat"><div class="lbl">Table size (m+1)×(n+1)</div><div class="val" id="lcs-cells" style="color:var(--muted)">—</div></div>
+      <div class="stat"><div class="lbl">Subproblems solved</div><div class="val" id="lcs-ops" style="color:var(--accent4)">—</div></div>
+    </div>
+    <div id="lcs-result-box" style="display:none;margin-top:1rem">
+      <div class="highlight-box" id="lcs-display"></div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <!-- Implementation -->
+    <div class="card">
+      <h3>Python Implementation</h3>
+      <pre><span class="kw">def</span> <span class="fn">lcs</span>(X, Y):
+    m, n = <span class="fn">len</span>(X), <span class="fn">len</span>(Y)
+
+    <span class="cm"># Build DP table — O(m×n) time/space</span>
+    dp = [[<span class="num">0</span>] * (n + <span class="num">1</span>) <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(m + <span class="num">1</span>)]
+
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, m + <span class="num">1</span>):
+        <span class="kw">for</span> j <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, n + <span class="num">1</span>):
+            <span class="kw">if</span> X[i-<span class="num">1</span>] == Y[j-<span class="num">1</span>]:
+                <span class="cm"># Characters match: extend previous LCS</span>
+                dp[i][j] = dp[i-<span class="num">1</span>][j-<span class="num">1</span>] + <span class="num">1</span>
+            <span class="kw">else</span>:
+                <span class="cm"># No match: take best of above or left</span>
+                dp[i][j] = <span class="fn">max</span>(dp[i-<span class="num">1</span>][j],
+                               dp[i][j-<span class="num">1</span>])
+
+    <span class="cm"># Traceback to reconstruct the LCS</span>
+    lcs_str = <span class="str">""</span>
+    i, j = m, n
+    <span class="kw">while</span> i > <span class="num">0</span> <span class="kw">and</span> j > <span class="num">0</span>:
+        <span class="kw">if</span> X[i-<span class="num">1</span>] == Y[j-<span class="num">1</span>]:
+            lcs_str = X[i-<span class="num">1</span>] + lcs_str
+            i -= <span class="num">1</span>
+            j -= <span class="num">1</span>
+        <span class="kw">elif</span> dp[i-<span class="num">1</span>][j] > dp[i][j-<span class="num">1</span>]:
+            i -= <span class="num">1</span>
+        <span class="kw">else</span>:
+            j -= <span class="num">1</span>
+
+    <span class="kw">return</span> dp[m][n], lcs_str, dp
+
+
+<span class="cm"># ── Sample run ───────────────────────</span>
+X = <span class="str">"ABCBDAB"</span>
+Y = <span class="str">"BDCAB"</span>
+length, seq, table = <span class="fn">lcs</span>(X, Y)
+<span class="cm"># length = 4</span>
+<span class="cm"># seq    = "BCAB"</span></pre>
+    </div>
+
+    <!-- Reflection card -->
+    <div class="card">
+      <h3>Reflection</h3>
+      <div class="sec-title">Implementation process</div>
+      <p>The DP table was built bottom-up: each cell <code>dp[i][j]</code> depends on three already-computed neighbours — above <code>dp[i-1][j]</code>, left <code>dp[i][j-1]</code>, and diagonal <code>dp[i-1][j-1]</code>. This avoids redundant recursion.</p>
+
+      <div class="sec-title">Challenges faced</div>
+      <p>The main difficulty was the traceback step — knowing when to go diagonal vs. up or left. An off-by-one in index mapping (1-indexed dp vs 0-indexed strings) is a common bug to watch for.</p>
+
+      <div class="sec-title">Complexity analysis</div>
+      <div style="margin:.5rem 0">
+        <span class="chip g">Time: O(m × n)</span>
+        <span class="chip p">Space: O(m × n)</span>
+        <span class="chip b">Traceback: O(m + n)</span>
+      </div>
+
+      <div class="sec-title">Optimisation possibilities</div>
+      <p>Space can be reduced to <strong>O(min(m, n))</strong> by storing only two rows of the table at once (rolling array). For reconstruction without the full table, Hirschberg's algorithm achieves O(min(m,n)) space in O(mn) time.</p>
+
+      <div class="sec-title">Real-world applications</div>
+      <ul class="adv-list">
+        <li>→ <strong>Git diff</strong> — comparing file versions line by line</li>
+        <li>→ <strong>DNA/protein alignment</strong> — bioinformatics sequence matching</li>
+        <li>→ <strong>Spell checkers</strong> — basis for edit distance (Levenshtein)</li>
+        <li>→ <strong>Plagiarism detection</strong> — measuring text similarity</li>
+        <li>→ <strong>Unix <code>diff</code> utility</strong> — outputs file change sets</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- DP Logic explanation -->
+  <div class="card">
+    <h3>How the DP Recurrence Works</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Condition</th><th>Formula</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>X[i] == Y[j]</code></td><td><code>dp[i][j] = dp[i-1][j-1] + 1</code></td><td>Characters match — extend LCS by 1</td></tr>
+          <tr><td><code>X[i] ≠ Y[j]</code></td><td><code>dp[i][j] = max(dp[i-1][j], dp[i][j-1])</code></td><td>No match — inherit the best so far</td></tr>
+          <tr><td>Base case</td><td><code>dp[0][j] = dp[i][0] = 0</code></td><td>Empty string has LCS length 0</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:.5rem;">The answer is stored in <code>dp[m][n]</code> — the bottom-right cell. The traceback follows diagonal moves (matching characters) back to the origin to reconstruct the actual subsequence string.</p>
+  </div>
+
+  <!-- Space optimisation -->
+  <div class="card">
+    <h3>Space-Optimised Version</h3>
+    <pre><span class="kw">def</span> <span class="fn">lcs_space_optimised</span>(X, Y):
+    <span class="cm"># Only keep 2 rows → O(min(m,n)) space</span>
+    m, n = <span class="fn">len</span>(X), <span class="fn">len</span>(Y)
+    <span class="kw">if</span> m < n:
+        X, Y = Y, X  <span class="cm"># ensure Y is shorter</span>
+        m, n = n, m
+
+    prev = [<span class="num">0</span>] * (n + <span class="num">1</span>)
+    curr = [<span class="num">0</span>] * (n + <span class="num">1</span>)
+
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, m + <span class="num">1</span>):
+        <span class="kw">for</span> j <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, n + <span class="num">1</span>):
+            <span class="kw">if</span> X[i-<span class="num">1</span>] == Y[j-<span class="num">1</span>]:
+                curr[j] = prev[j-<span class="num">1</span>] + <span class="num">1</span>
+            <span class="kw">else</span>:
+                curr[j] = <span class="fn">max</span>(prev[j], curr[j-<span class="num">1</span>])
+        prev, curr = curr, [<span class="num">0</span>]*(n+<span class="num">1</span>)
+
+    <span class="kw">return</span> prev[n]  <span class="cm"># length only</span>
+
+<span class="cm"># Note: reconstruction requires Hirschberg's algorithm</span>
+<span class="cm"># for O(n) space while preserving traceback ability.</span></pre>
+    <p style="font-size:13px;">This version uses <strong>O(n)</strong> space instead of O(m×n), making it practical for very long strings. Trade-off: you lose the ability to reconstruct the sequence without the full table.</p>
+  </div>
+
+</section>
+
+<script>
+function solveLCS(){
+  const X=document.getElementById('lcs-x').value.toUpperCase().replace(/[^A-Z]/g,'');
+  const Y=document.getElementById('lcs-y').value.toUpperCase().replace(/[^A-Z]/g,'');
+  if(!X||!Y){return;}
+  const m=X.length,n=Y.length;
+  const dp=Array.from({length:m+1},()=>new Array(n+1).fill(0));
+  for(let i=1;i<=m;i++)for(let j=1;j<=n;j++){
+    if(X[i-1]===Y[j-1]) dp[i][j]=dp[i-1][j-1]+1;
+    else dp[i][j]=Math.max(dp[i-1][j],dp[i][j-1]);
+  }
+  let s='',i=m,j=n;
+  const path=new Set();
+  while(i>0&&j>0){
+    if(X[i-1]===Y[j-1]){path.add(`${i},${j}`);s=X[i-1]+s;i--;j--;}
+    else if(dp[i-1][j]>dp[i][j-1])i--;else j--;
+  }
+  document.getElementById('lcs-len').textContent=dp[m][n];
+  document.getElementById('lcs-str').textContent=s||'(none)';
+  document.getElementById('lcs-cells').textContent=`${m+1}×${n+1}`;
+  document.getElementById('lcs-ops').textContent=m*n;
+  if(s){
+    document.getElementById('lcs-result-box').style.display='block';
+    document.getElementById('lcs-display').textContent=s;
+  }
+  drawLCS(X,Y,dp,path);
+}
+
+function drawLCS(X,Y,dp,path){
+  const canvas=document.getElementById('lcs-canvas');
+  const W=canvas.offsetWidth;canvas.width=W;
+  const m=X.length,n=Y.length;
+  const cell=Math.min(40,Math.floor((W-70)/(n+2)));
+  const H=Math.max(300,(m+2)*cell+70);
+  canvas.height=H;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,W,H);
+  const ox=55,oy=50;
+  const maxVal=dp[m][n]||1;
+
+  for(let i=0;i<=m;i++)for(let j=0;j<=n;j++){
+    const x=ox+j*cell,y=oy+i*cell,v=dp[i][j];
+    const isPath=path.has(`${i},${j}`);
+    if(isPath){ctx.fillStyle='#163a2a';}
+    else if(v>0){const alpha=0.06+0.3*v/maxVal;ctx.fillStyle=`rgba(91,138,240,${alpha})`;}
+    else{ctx.fillStyle='#13161e';}
+    ctx.strokeStyle=isPath?'#34d399':'rgba(255,255,255,0.06)';
+    ctx.lineWidth=isPath?1.5:0.5;
+    ctx.beginPath();ctx.roundRect(x+0.5,y+0.5,cell-1,cell-1,2);ctx.fill();ctx.stroke();
+    ctx.fillStyle=isPath?'#34d399':v>0?'#8890a4':'#4a5270';
+    ctx.font=`${Math.max(10,Math.min(14,cell-10))}px JetBrains Mono`;
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(v,x+cell/2,y+cell/2);
+  }
+  // column headers (Y)
+  ctx.fillStyle='#5b8af0';ctx.font=`bold ${Math.max(10,cell-10)}px JetBrains Mono`;ctx.textAlign='center';
+  for(let j=0;j<n;j++) ctx.fillText(Y[j],ox+(j+1)*cell+cell/2,oy-16);
+  // row headers (X)
+  ctx.fillStyle='#a78bfa';
+  for(let i=0;i<m;i++){ctx.textAlign='right';ctx.fillText(X[i],ox-8,oy+(i+1)*cell+cell/2);}
+  // legend
+  ctx.fillStyle='rgba(52,211,153,0.15)';ctx.strokeStyle='#34d399';ctx.lineWidth=1;
+  ctx.beginPath();ctx.roundRect(8,H-24,12,12,2);ctx.fill();ctx.stroke();
+  ctx.fillStyle='#8890a4';ctx.font='11px Sora';ctx.textAlign='left';ctx.textBaseline='middle';
+  ctx.fillText('Traceback path (LCS)',26,H-18);
+}
+
+solveLCS();
+</script>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task 1 — Linear vs Binary Search</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0d0f14;--bg2:#13161e;--bg3:#1a1e28;--border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.15);--text:#e8eaf0;--muted:#8890a4;--accent:#5b8af0;--accent2:#a78bfa;--accent3:#34d399;--accent4:#fb923c;--accent5:#f472b6;--code-bg:#0a0c12;--radius:12px;--radius-sm:8px;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Sora',sans-serif;font-size:15px;line-height:1.7;}
+  .hero{text-align:center;padding:3.5rem 2rem 2.5rem;background:radial-gradient(ellipse at top,rgba(91,138,240,0.13) 0%,transparent 60%);}
+  .hero h1{font-size:clamp(1.6rem,4vw,2.8rem);font-weight:700;background:linear-gradient(135deg,#e8eaf0,#5b8af0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .hero p{margin-top:.5rem;color:var(--muted);font-size:.95rem;}
+  .task-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--accent);background:rgba(91,138,240,0.12);border:1px solid rgba(91,138,240,0.3);border-radius:6px;padding:.2rem .6rem;margin-bottom:.75rem;}
+  section{max-width:960px;margin:0 auto;padding:2rem 1.5rem 3rem;}
+  .card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.5rem;}
+  .card h3{font-size:1rem;font-weight:600;margin-bottom:1rem;color:var(--text);}
+  .card p{color:var(--muted);font-size:14px;line-height:1.7;}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1.25rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6;color:#b0b8d0;margin:.75rem 0;}
+  .kw{color:#a78bfa;}.fn{color:#5b8af0;}.str{color:#34d399;}.cm{color:#4a5270;font-style:italic;}.num{color:#fb923c;}
+  .tbl-wrap{overflow-x:auto;margin:1rem 0;}
+  table{width:100%;border-collapse:collapse;font-size:14px;}
+  th{background:var(--bg3);color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.05em;padding:.65rem 1rem;text-align:left;border-bottom:1px solid var(--border2);}
+  td{padding:.65rem 1rem;border-bottom:1px solid var(--border);color:var(--text);}
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:rgba(255,255,255,0.02);}
+  .good{color:var(--accent3);}.bad{color:#f87171;}.med{color:var(--accent4);}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;}
+  .controls{display:flex;flex-wrap:wrap;gap:.75rem;align-items:center;margin-bottom:1.25rem;}
+  button{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);padding:.45rem 1rem;font-family:'Sora',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;}
+  button:hover{background:rgba(255,255,255,0.08);border-color:var(--accent);}
+  button.primary{background:var(--accent);border-color:var(--accent);color:#fff;}
+  button.primary:hover{opacity:.85;}
+  input[type=range]{accent-color:var(--accent);flex:1;min-width:120px;}
+  input[type=number]{background:var(--code-bg);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);padding:.4rem .75rem;font-family:'JetBrains Mono',monospace;font-size:13px;width:80px;}
+  label{font-size:13px;color:var(--muted);}
+  canvas{display:block;width:100%;border-radius:var(--radius-sm);}
+  #search-canvas{border:1px solid var(--border);background:var(--code-bg);}
+  .stats{display:flex;flex-wrap:wrap;gap:1rem;margin:1rem 0;}
+  .stat{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.75rem 1.25rem;}
+  .stat .lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+  .stat .val{font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:600;margin-top:.15rem;}
+  .adv-list{list-style:none;padding:0;}
+  .adv-list li{padding:.35rem 0;font-size:14px;color:var(--muted);display:flex;gap:.5rem;}
+  .legend{display:flex;gap:1.25rem;flex-wrap:wrap;margin-top:.75rem;font-size:12px;color:var(--muted);}
+  .legend-item{display:flex;align-items:center;gap:.4rem;}
+  .legend-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0;}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="task-badge">TASK 01</div>
+  <h1>Linear Search vs Binary Search</h1>
+  <p>Comparing execution time, comparisons, efficiency, advantages &amp; disadvantages</p>
+</div>
+
+<section>
+
+  <!-- Interactive Demo -->
+  <div class="card">
+    <h3>Interactive Comparison Visualiser</h3>
+    <div class="controls">
+      <label>Array size: <strong id="sz-lbl">20</strong></label>
+      <input type="range" id="sz" min="5" max="50" value="20" oninput="document.getElementById('sz-lbl').textContent=this.value;buildSearchDemo()">
+      <label>Target value:</label>
+      <input type="number" id="target" value="37" onchange="runSearch()">
+      <button class="primary" onclick="runSearch()">▶ Run Search</button>
+      <button onclick="buildSearchDemo()">⟳ Shuffle Array</button>
+    </div>
+    <canvas id="search-canvas" height="130"></canvas>
+    <div class="legend">
+      <span class="legend-item"><span class="legend-dot" style="background:#fb923c44;border:1px solid #fb923c88"></span>Linear visited</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#5b8af044;border:1px solid #5b8af088"></span>Binary visited</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#a78bfa55;border:1px solid #a78bfa"></span>Both visited</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#34d399;border:1px solid #34d399"></span>Found</span>
+    </div>
+    <div class="stats" id="search-stats" style="margin-top:1.25rem">
+      <div class="stat"><div class="lbl">Linear comparisons</div><div class="val" id="lin-cmp" style="color:var(--accent4)">—</div></div>
+      <div class="stat"><div class="lbl">Binary comparisons</div><div class="val" id="bin-cmp" style="color:var(--accent3)">—</div></div>
+      <div class="stat"><div class="lbl">Array size (n)</div><div class="val" id="arr-sz">20</div></div>
+      <div class="stat"><div class="lbl">Result index</div><div class="val" id="lin-res" style="color:var(--muted)">—</div></div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <!-- Code -->
+    <div class="card">
+      <h3>Python Implementation</h3>
+      <pre><span class="cm"># ── Linear Search ── O(n) ──────────</span>
+<span class="kw">def</span> <span class="fn">linear_search</span>(arr, target):
+    comparisons = <span class="num">0</span>
+    <span class="kw">for</span> i, val <span class="kw">in</span> <span class="fn">enumerate</span>(arr):
+        comparisons += <span class="num">1</span>
+        <span class="kw">if</span> val == target:
+            <span class="kw">return</span> i, comparisons
+    <span class="kw">return</span> -<span class="num">1</span>, comparisons
+
+
+<span class="cm"># ── Binary Search ── O(log n) ───────</span>
+<span class="kw">def</span> <span class="fn">binary_search</span>(arr, target):
+    lo, hi = <span class="num">0</span>, <span class="fn">len</span>(arr) - <span class="num">1</span>
+    comparisons = <span class="num">0</span>
+    <span class="kw">while</span> lo &lt;= hi:
+        mid = (lo + hi) // <span class="num">2</span>
+        comparisons += <span class="num">1</span>
+        <span class="kw">if</span> arr[mid] == target:
+            <span class="kw">return</span> mid, comparisons
+        <span class="kw">elif</span> arr[mid] &lt; target:
+            lo = mid + <span class="num">1</span>
+        <span class="kw">else</span>:
+            hi = mid - <span class="num">1</span>
+    <span class="kw">return</span> -<span class="num">1</span>, comparisons
+
+
+<span class="cm"># ── Sample run ─────────────────────</span>
+arr = <span class="fn">sorted</span>([<span class="num">3</span>,<span class="num">7</span>,<span class="num">15</span>,<span class="num">22</span>,<span class="num">37</span>,<span class="num">41</span>,<span class="num">58</span>,<span class="num">63</span>])
+target = <span class="num">37</span>
+
+li, lc = <span class="fn">linear_search</span>(arr, target)
+bi, bc = <span class="fn">binary_search</span>(arr, target)
+<span class="cm"># linear: idx=4, comparisons=5</span>
+<span class="cm"># binary: idx=4, comparisons=2</span></pre>
+    </div>
+
+    <!-- Complexity Table -->
+    <div class="card">
+      <h3>Complexity Analysis</h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Metric</th><th>Linear</th><th>Binary</th></tr></thead>
+          <tbody>
+            <tr><td>Best case</td><td class="good">O(1)</td><td class="good">O(1)</td></tr>
+            <tr><td>Worst case</td><td class="bad">O(n)</td><td class="good">O(log n)</td></tr>
+            <tr><td>Average case</td><td class="med">O(n/2)</td><td class="good">O(log n)</td></tr>
+            <tr><td>Space complexity</td><td class="good">O(1)</td><td class="good">O(1)</td></tr>
+            <tr><td>Requires sorted data</td><td class="good">No</td><td class="bad">Yes</td></tr>
+            <tr><td>Works on linked lists</td><td class="good">Yes</td><td class="bad">No</td></tr>
+            <tr><td>n = 1,000 (max steps)</td><td class="bad">1,000</td><td class="good">10</td></tr>
+            <tr><td>n = 1,000,000 (max steps)</td><td class="bad">1,000,000</td><td class="good">20</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:1rem;font-size:13px;">For n = 1 million, binary search needs only <strong>log₂(1,000,000) ≈ 20</strong> comparisons — while linear search may need all one million.</p>
+    </div>
+  </div>
+
+  <!-- Advantages / Disadvantages -->
+  <div class="grid2" style="margin-top:.5rem">
+    <div class="card">
+      <h3>Linear Search</h3>
+      <p style="margin-bottom:.75rem;font-size:13px;color:var(--accent3);font-weight:600;">✅ Advantages</p>
+      <ul class="adv-list">
+        <li>→ Works on unsorted arrays — no pre-processing needed</li>
+        <li>→ Simple to understand and implement in any language</li>
+        <li>→ Works on any data structure (arrays, linked lists, etc.)</li>
+        <li>→ Efficient for very small datasets</li>
+        <li>→ Can find all occurrences of the target in one pass</li>
+      </ul>
+      <p style="margin:.85rem 0 .5rem;font-size:13px;color:#f87171;font-weight:600;">❌ Disadvantages</p>
+      <ul class="adv-list">
+        <li>→ Slow for large datasets — checks every element unnecessarily</li>
+        <li>→ O(n) worst case makes it unusable for big data</li>
+        <li>→ No benefit from data being sorted</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Binary Search</h3>
+      <p style="margin-bottom:.75rem;font-size:13px;color:var(--accent3);font-weight:600;">✅ Advantages</p>
+      <ul class="adv-list">
+        <li>→ Logarithmic time — extremely fast even at n = 1 billion</li>
+        <li>→ Very efficient for large, sorted datasets</li>
+        <li>→ Predictable and consistent performance</li>
+        <li>→ Used in databases, OS file systems, dictionaries</li>
+      </ul>
+      <p style="margin:.85rem 0 .5rem;font-size:13px;color:#f87171;font-weight:600;">❌ Disadvantages</p>
+      <ul class="adv-list">
+        <li>→ Requires array to be sorted beforehand</li>
+        <li>→ Sorting adds O(n log n) overhead if data is unsorted</li>
+        <li>→ Only works on random-access structures (arrays), not linked lists</li>
+        <li>→ More complex to implement (off-by-one errors common)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Execution Time Discussion -->
+  <div class="card">
+    <h3>Execution Time &amp; Efficiency Summary</h3>
+    <p>Both algorithms achieve <strong>O(1)</strong> space complexity. The key difference is execution time as input grows. Linear search's time grows proportionally with <em>n</em>, while binary search's time grows with the <em>logarithm</em> of n — making it dramatically faster for large inputs.</p>
+    <p style="margin-top:.75rem;">However, if the array is unsorted and a sort is needed first, the sorting cost (O(n log n)) must be factored in. Linear search wins for one-time searches on unsorted data; binary search wins for repeated searches on sorted data.</p>
+    <div class="stats" style="margin-top:1.25rem">
+      <div class="stat"><div class="lbl">n = 100</div><div class="val" style="font-size:1rem">Linear: 100 / Binary: 7</div></div>
+      <div class="stat"><div class="lbl">n = 10,000</div><div class="val" style="font-size:1rem">Linear: 10K / Binary: 14</div></div>
+      <div class="stat"><div class="lbl">n = 1,000,000</div><div class="val" style="font-size:1rem">Linear: 1M / Binary: 20</div></div>
+    </div>
+  </div>
+
+</section>
+
+<script>
+let searchArr=[];
+function buildSearchDemo(){
+  const n=parseInt(document.getElementById('sz').value);
+  document.getElementById('arr-sz').textContent=n;
+  const raw=Array.from({length:n*2},()=>Math.floor(Math.random()*99)+1);
+  searchArr=[...new Set(raw)].slice(0,n).sort((a,b)=>a-b);
+  drawSearch([],[],-1,-1);
+  ['lin-cmp','bin-cmp','lin-res'].forEach(id=>document.getElementById(id).textContent='—');
+}
+
+function runSearch(){
+  const target=parseInt(document.getElementById('target').value);
+  if(!searchArr.length) buildSearchDemo();
+  let linCmp=0,linIdx=-1;
+  const linVis=[];
+  for(let i=0;i<searchArr.length;i++){linCmp++;linVis.push(i);if(searchArr[i]===target){linIdx=i;break;}}
+  let lo=0,hi=searchArr.length-1,binCmp=0,binIdx=-1;
+  const binVis=[];
+  while(lo<=hi){const mid=Math.floor((lo+hi)/2);binCmp++;binVis.push(mid);if(searchArr[mid]===target){binIdx=mid;break;}else if(searchArr[mid]<target)lo=mid+1;else hi=mid-1;}
+  document.getElementById('lin-cmp').textContent=linCmp;
+  document.getElementById('bin-cmp').textContent=binCmp;
+  document.getElementById('lin-res').textContent=linIdx>=0?`idx ${linIdx}`:'Not found';
+  drawSearch(linVis,binVis,linIdx,binIdx,target);
+}
+
+function drawSearch(linVis,binVis,linIdx,binIdx,target){
+  const canvas=document.getElementById('search-canvas');
+  const W=canvas.offsetWidth;canvas.width=W;canvas.height=130;
+  const ctx=canvas.getContext('2d');
+  const n=searchArr.length;
+  if(!n)return;
+  ctx.clearRect(0,0,W,130);
+  const cw=W/n,bw=Math.max(cw*0.78,2);
+  searchArr.forEach((v,i)=>{
+    const x=i*cw+(cw-bw)/2;
+    const found=i===linIdx||i===binIdx;
+    let fill='#1a1e28';
+    if(found) fill='#34d399';
+    else if(linVis.includes(i)&&binVis.includes(i)) fill='#a78bfa55';
+    else if(linVis.includes(i)) fill='#fb923c33';
+    else if(binVis.includes(i)) fill='#5b8af033';
+    ctx.fillStyle=fill;
+    ctx.strokeStyle=found?'#34d399':linVis.includes(i)&&binVis.includes(i)?'#a78bfa':linVis.includes(i)?'#fb923c66':binVis.includes(i)?'#5b8af066':'#2a2e3a';
+    ctx.lineWidth=found?1.5:0.5;
+    ctx.beginPath();ctx.roundRect(x,18,bw,64,3);ctx.fill();ctx.stroke();
+    if(bw>14){
+      ctx.fillStyle=found?'#0d0f14':'#8890a4';
+      ctx.font=`${Math.max(9,Math.min(13,bw-4))}px JetBrains Mono`;
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(v,i*cw+cw/2,50);
+    }
+  });
+  ctx.fillStyle='#4a5270';ctx.font='11px Sora';ctx.textAlign='left';ctx.textBaseline='alphabetic';
+  if(target!==undefined) ctx.fillText(`Searching for: ${target}`,8,108);
+}
+
+// init
+buildSearchDemo();
+</script>
+</body>
+</html>

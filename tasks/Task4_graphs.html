@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task 4 — Connected &amp; Disconnected Graphs</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0d0f14;--bg2:#13161e;--bg3:#1a1e28;--border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.15);--text:#e8eaf0;--muted:#8890a4;--accent:#fb923c;--accent2:#5b8af0;--accent3:#34d399;--accent4:#a78bfa;--code-bg:#0a0c12;--radius:12px;--radius-sm:8px;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Sora',sans-serif;font-size:15px;line-height:1.7;}
+  .hero{text-align:center;padding:3.5rem 2rem 2.5rem;background:radial-gradient(ellipse at top,rgba(251,146,60,0.12) 0%,transparent 60%);}
+  .hero h1{font-size:clamp(1.6rem,4vw,2.8rem);font-weight:700;background:linear-gradient(135deg,#e8eaf0,#fb923c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .hero p{margin-top:.5rem;color:var(--muted);font-size:.95rem;}
+  .task-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--accent);background:rgba(251,146,60,0.12);border:1px solid rgba(251,146,60,0.3);border-radius:6px;padding:.2rem .6rem;margin-bottom:.75rem;}
+  section{max-width:960px;margin:0 auto;padding:2rem 1.5rem 3rem;}
+  .card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.5rem;}
+  .card h3{font-size:1rem;font-weight:600;margin-bottom:1rem;color:var(--text);}
+  .card p{color:var(--muted);font-size:14px;line-height:1.7;}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1.25rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6;color:#b0b8d0;margin:.75rem 0;}
+  .kw{color:#a78bfa;}.fn{color:#5b8af0;}.str{color:#34d399;}.cm{color:#4a5270;font-style:italic;}.num{color:#fb923c;}
+  .tbl-wrap{overflow-x:auto;margin:1rem 0;}
+  table{width:100%;border-collapse:collapse;font-size:14px;}
+  th{background:var(--bg3);color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.05em;padding:.65rem 1rem;text-align:left;border-bottom:1px solid var(--border2);}
+  td{padding:.65rem 1rem;border-bottom:1px solid var(--border);color:var(--text);}
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:rgba(255,255,255,0.02);}
+  .good{color:var(--accent3);}.bad{color:#f87171;}.med{color:var(--accent);}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;}
+  .controls{display:flex;flex-wrap:wrap;gap:.75rem;align-items:center;margin-bottom:1.25rem;}
+  button{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);padding:.45rem 1rem;font-family:'Sora',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;}
+  button:hover{background:rgba(255,255,255,0.08);border-color:var(--accent);}
+  button.primary{background:var(--accent);border-color:var(--accent);color:#fff;}
+  button.primary:hover{opacity:.85;}
+  button.blue{background:var(--accent2);border-color:var(--accent2);color:#fff;}
+  button.blue:hover{opacity:.85;}
+  input[type=range]{accent-color:var(--accent);min-width:80px;}
+  label{font-size:13px;color:var(--muted);}
+  canvas{display:block;width:100%;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--code-bg);}
+  .stats{display:flex;flex-wrap:wrap;gap:1rem;margin:1rem 0;}
+  .stat{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.75rem 1.25rem;}
+  .stat .lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+  .stat .val{font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:600;margin-top:.15rem;}
+  .chip{display:inline-block;border-radius:6px;padding:.15rem .55rem;font-size:12px;font-family:'JetBrains Mono',monospace;margin:.15rem;}
+  .chip.g{background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);color:var(--accent3);}
+  .chip.b{background:rgba(91,138,240,0.15);border:1px solid rgba(91,138,240,0.3);color:var(--accent2);}
+  .chip.o{background:rgba(251,146,60,0.1);border:1px solid rgba(251,146,60,0.3);color:var(--accent);}
+  .chip.p{background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.3);color:var(--accent4);}
+  .adv-list{list-style:none;padding:0;}
+  .adv-list li{padding:.3rem 0;font-size:14px;color:var(--muted);display:flex;gap:.5rem;}
+  .sec-title{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;border-bottom:1px solid var(--border);padding-bottom:.4rem;margin:1.2rem 0 .7rem;}
+  .legend{display:flex;gap:1.25rem;flex-wrap:wrap;margin-top:.75rem;font-size:12px;color:var(--muted);}
+  .legend-item{display:flex;align-items:center;gap:.4rem;}
+  .legend-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;}
+  .tab-row{display:flex;gap:.5rem;margin-bottom:1rem;}
+  .tab-btn{padding:.35rem .85rem;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:var(--bg3);color:var(--muted);transition:all .15s;}
+  .tab-btn.active{background:var(--bg2);color:var(--text);border-color:var(--accent);}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="task-badge">TASK 04</div>
+  <h1>Connected &amp; Disconnected Graphs</h1>
+  <p>Graph traversal with DFS and BFS — visualised &amp; explained</p>
+</div>
+
+<section>
+
+  <!-- Explanation -->
+  <div class="card">
+    <h3>Graph Types — Explanation</h3>
+    <div class="grid2">
+      <div>
+        <p class="sec-title">Connected Graph</p>
+        <p>A graph is <strong>connected</strong> if there exists a path between <em>every</em> pair of vertices. Starting BFS or DFS from any single node will visit all nodes in the graph. There is exactly <strong>one connected component</strong>.</p>
+      </div>
+      <div>
+        <p class="sec-title">Disconnected Graph</p>
+        <p>A graph is <strong>disconnected</strong> if at least one pair of vertices has no path between them. It consists of <strong>two or more isolated components</strong>. Traversal from one node cannot reach nodes in other components — the algorithm must be restarted for each unvisited node.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive visualiser -->
+  <div class="card">
+    <h3>Interactive Graph Traversal Visualiser</h3>
+    <div class="controls">
+      <button class="primary" onclick="setGraph('connected')" id="btn-conn">Connected</button>
+      <button onclick="setGraph('disconnected')" id="btn-disc">Disconnected</button>
+      <span style="width:1px;height:20px;background:var(--border2);margin:0 .25rem"></span>
+      <button class="blue" onclick="startTraversal('bfs')">▶ BFS</button>
+      <button class="blue" onclick="startTraversal('dfs')">▶ DFS</button>
+      <button onclick="resetGraph()">⟳ Reset</button>
+      <label>Speed
+        <input type="range" id="speed" min="100" max="950" value="550" style="margin-left:.4rem">
+      </label>
+    </div>
+    <canvas id="graph-canvas" height="330"></canvas>
+    <div class="legend" style="margin-top:.75rem">
+      <span class="legend-item"><span class="legend-dot" style="background:#1a1e28;border:1.5px solid #2a2e3a"></span>Unvisited</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#5b8af0"></span>Current node</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#34d399"></span>Visited</span>
+    </div>
+    <div class="stats" style="margin-top:1rem">
+      <div class="stat"><div class="lbl">Graph type</div><div class="val" id="g-mode" style="font-size:1rem;color:var(--accent)">Connected</div></div>
+      <div class="stat"><div class="lbl">Algorithm</div><div class="val" id="g-algo" style="font-size:1rem">—</div></div>
+      <div class="stat"><div class="lbl">Components</div><div class="val" id="g-comp" style="color:var(--accent4)">1</div></div>
+      <div class="stat"><div class="lbl">Visit order</div><div class="val" id="g-order" style="font-size:.85rem;color:var(--accent3)">—</div></div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <!-- Code -->
+    <div class="card">
+      <h3>Python — BFS &amp; DFS</h3>
+      <pre><span class="kw">from</span> collections <span class="kw">import</span> deque
+
+<span class="cm"># ── BFS (Breadth-First Search) ──────</span>
+<span class="kw">def</span> <span class="fn">bfs</span>(graph, start):
+    visited = <span class="fn">set</span>([start])
+    queue   = <span class="fn">deque</span>([start])
+    order   = []
+    <span class="kw">while</span> queue:
+        node = queue.popleft()   <span class="cm"># FIFO</span>
+        order.append(node)
+        <span class="kw">for</span> nbr <span class="kw">in</span> graph[node]:
+            <span class="kw">if</span> nbr <span class="kw">not in</span> visited:
+                visited.add(nbr)
+                queue.append(nbr)
+    <span class="kw">return</span> order
+
+
+<span class="cm"># ── DFS (Depth-First Search) ────────</span>
+<span class="kw">def</span> <span class="fn">dfs</span>(graph, start, visited=<span class="kw">None</span>):
+    <span class="kw">if</span> visited <span class="kw">is None</span>:
+        visited = <span class="fn">set</span>()
+    visited.add(start)
+    order = [start]
+    <span class="kw">for</span> nbr <span class="kw">in</span> graph[start]:
+        <span class="kw">if</span> nbr <span class="kw">not in</span> visited:
+            order += <span class="fn">dfs</span>(graph, nbr, visited)
+    <span class="kw">return</span> order
+
+
+<span class="cm"># ── Count connected components ───────</span>
+<span class="kw">def</span> <span class="fn">count_components</span>(graph):
+    visited, count = <span class="fn">set</span>(), <span class="num">0</span>
+    <span class="kw">for</span> node <span class="kw">in</span> graph:
+        <span class="kw">if</span> node <span class="kw">not in</span> visited:
+            <span class="fn">dfs</span>(graph, node, visited)
+            count += <span class="num">1</span>
+    <span class="kw">return</span> count
+
+
+<span class="cm"># ── Sample graphs ────────────────────</span>
+connected = {
+    <span class="str">'A'</span>: [<span class="str">'B'</span>, <span class="str">'D'</span>], <span class="str">'B'</span>: [<span class="str">'A'</span>,<span class="str">'C'</span>,<span class="str">'E'</span>],
+    <span class="str">'C'</span>: [<span class="str">'B'</span>, <span class="str">'E'</span>], <span class="str">'D'</span>: [<span class="str">'A'</span>,<span class="str">'E'</span>,<span class="str">'F'</span>],
+    <span class="str">'E'</span>: [<span class="str">'B'</span>,<span class="str">'C'</span>,<span class="str">'D'</span>,<span class="str">'F'</span>], <span class="str">'F'</span>: [<span class="str">'D'</span>,<span class="str">'E'</span>]
+}
+disconnected = {
+    <span class="str">'A'</span>:[<span class="str">'B'</span>,<span class="str">'C'</span>], <span class="str">'B'</span>:[<span class="str">'A'</span>,<span class="str">'C'</span>], <span class="str">'C'</span>:[<span class="str">'A'</span>,<span class="str">'B'</span>],
+    <span class="str">'D'</span>:[<span class="str">'E'</span>,<span class="str">'F'</span>], <span class="str">'E'</span>:[<span class="str">'D'</span>,<span class="str">'F'</span>], <span class="str">'F'</span>:[<span class="str">'D'</span>,<span class="str">'E'</span>],
+    <span class="str">'G'</span>:[]
+}</pre>
+    </div>
+
+    <!-- BFS vs DFS comparison -->
+    <div class="card">
+      <h3>BFS vs DFS Comparison</h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Property</th><th>BFS</th><th>DFS</th></tr></thead>
+          <tbody>
+            <tr><td>Data structure</td><td>Queue (FIFO)</td><td>Stack / Recursion</td></tr>
+            <tr><td>Traversal order</td><td>Level by level</td><td>Branch to depth first</td></tr>
+            <tr><td>Shortest path</td><td class="good">✅ Yes (unweighted)</td><td class="bad">❌ No</td></tr>
+            <tr><td>Memory (wide graph)</td><td class="bad">O(w) — large</td><td class="good">O(h) — smaller</td></tr>
+            <tr><td>Memory (deep graph)</td><td class="good">O(w) — small</td><td class="bad">O(h) — large</td></tr>
+            <tr><td>Time complexity</td><td>O(V + E)</td><td>O(V + E)</td></tr>
+            <tr><td>Cycle detection</td><td class="good">Yes</td><td class="good">Yes</td></tr>
+            <tr><td>Topological sort</td><td class="bad">No</td><td class="good">Yes</td></tr>
+            <tr><td>Find all components</td><td class="good">Yes</td><td class="good">Yes</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:1rem">
+        <span class="chip g">V = vertices</span>
+        <span class="chip b">E = edges</span>
+        <span class="chip o">w = max width</span>
+        <span class="chip p">h = max depth</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Adjacency list + matrix explanation -->
+  <div class="card">
+    <h3>Graph Representations</h3>
+    <div class="grid2">
+      <div>
+        <p class="sec-title">Adjacency List (used above)</p>
+        <pre><span class="cm"># Connected graph example</span>
+graph = {
+    <span class="str">'A'</span>: [<span class="str">'B'</span>, <span class="str">'D'</span>],
+    <span class="str">'B'</span>: [<span class="str">'A'</span>, <span class="str">'C'</span>, <span class="str">'E'</span>],
+    <span class="str">'C'</span>: [<span class="str">'B'</span>, <span class="str">'E'</span>],
+    <span class="str">'D'</span>: [<span class="str">'A'</span>, <span class="str">'E'</span>, <span class="str">'F'</span>],
+    <span class="str">'E'</span>: [<span class="str">'B'</span>, <span class="str">'C'</span>, <span class="str">'D'</span>, <span class="str">'F'</span>],
+    <span class="str">'F'</span>: [<span class="str">'D'</span>, <span class="str">'E'</span>],
+}
+<span class="cm"># Space: O(V + E) — efficient for sparse</span></pre>
+      </div>
+      <div>
+        <p class="sec-title">Adjacency Matrix</p>
+        <pre><span class="cm"># 0 = no edge, 1 = edge exists</span>
+<span class="cm">#   A  B  C  D  E  F</span>
+matrix = [
+  [<span class="num">0</span>, <span class="num">1</span>, <span class="num">0</span>, <span class="num">1</span>, <span class="num">0</span>, <span class="num">0</span>],  <span class="cm"># A</span>
+  [<span class="num">1</span>, <span class="num">0</span>, <span class="num">1</span>, <span class="num">0</span>, <span class="num">1</span>, <span class="num">0</span>],  <span class="cm"># B</span>
+  [<span class="num">0</span>, <span class="num">1</span>, <span class="num">0</span>, <span class="num">0</span>, <span class="num">1</span>, <span class="num">0</span>],  <span class="cm"># C</span>
+  [<span class="num">1</span>, <span class="num">0</span>, <span class="num">0</span>, <span class="num">0</span>, <span class="num">1</span>, <span class="num">1</span>],  <span class="cm"># D</span>
+  [<span class="num">0</span>, <span class="num">1</span>, <span class="num">1</span>, <span class="num">1</span>, <span class="num">0</span>, <span class="num">1</span>],  <span class="cm"># E</span>
+  [<span class="num">0</span>, <span class="num">0</span>, <span class="num">0</span>, <span class="num">1</span>, <span class="num">1</span>, <span class="num">0</span>],  <span class="cm"># F</span>
+]
+<span class="cm"># Space: O(V²) — better for dense graphs</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Applications -->
+  <div class="card">
+    <h3>Real-World Applications</h3>
+    <div class="grid2">
+      <div>
+        <p class="sec-title">BFS Use Cases</p>
+        <ul class="adv-list">
+          <li>→ <strong>GPS navigation</strong> — shortest route (unweighted)</li>
+          <li>→ <strong>Social networks</strong> — "People you may know" (degree of separation)</li>
+          <li>→ <strong>Web crawlers</strong> — crawl pages level by level</li>
+          <li>→ <strong>Peer-to-peer networks</strong> — finding nearest peers</li>
+          <li>→ <strong>Broadcasting</strong> — network packet flooding</li>
+        </ul>
+      </div>
+      <div>
+        <p class="sec-title">DFS Use Cases</p>
+        <ul class="adv-list">
+          <li>→ <strong>Topological sorting</strong> — task dependency ordering</li>
+          <li>→ <strong>Maze solving</strong> — exploring all paths</li>
+          <li>→ <strong>Compiler design</strong> — detecting cycles in dependency graphs</li>
+          <li>→ <strong>Connected components</strong> — island counting in grids</li>
+          <li>→ <strong>Strongly connected components</strong> — Kosaraju's / Tarjan's algorithm</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<script>
+const GRAPHS = {
+  connected: {
+    nodes:[
+      {id:0,x:.15,y:.22,lbl:'A'},{id:1,x:.5,y:.07,lbl:'B'},{id:2,x:.83,y:.22,lbl:'C'},
+      {id:3,x:.3,y:.62,lbl:'D'},{id:4,x:.68,y:.62,lbl:'E'},{id:5,x:.5,y:.88,lbl:'F'}
+    ],
+    edges:[[0,1],[0,3],[1,2],[1,4],[2,4],[3,4],[3,5],[4,5]],
+    adj:{0:[1,3],1:[0,2,4],2:[1,4],3:[0,4,5],4:[1,2,3,5],5:[3,4]},
+    components:1
+  },
+  disconnected: {
+    nodes:[
+      {id:0,x:.1,y:.28,lbl:'A'},{id:1,x:.27,y:.1,lbl:'B'},{id:2,x:.27,y:.48,lbl:'C'},
+      {id:3,x:.53,y:.28,lbl:'D'},{id:4,x:.73,y:.12,lbl:'E'},{id:5,x:.73,y:.48,lbl:'F'},
+      {id:6,x:.9,y:.8,lbl:'G'}
+    ],
+    edges:[[0,1],[0,2],[1,2],[3,4],[3,5],[4,5]],
+    adj:{0:[1,2],1:[0,2],2:[0,1],3:[4,5],4:[3,5],5:[3,4],6:[]},
+    components:3
+  }
+};
+
+let curGraph='connected', nodeColors={}, traversalTimer=null;
+const compColors=['#5b8af0','#34d399','#fb923c','#a78bfa','#f472b6','#38bdf8'];
+
+function setGraph(type){
+  curGraph=type;
+  document.getElementById('btn-conn').className=type==='connected'?'primary':'';
+  document.getElementById('btn-disc').className=type==='disconnected'?'primary':'';
+  document.getElementById('g-mode').textContent=type==='connected'?'Connected':'Disconnected';
+  document.getElementById('g-mode').style.color=type==='connected'?'var(--accent3)':'var(--accent)';
+  document.getElementById('g-comp').textContent=GRAPHS[type].components;
+  resetGraph();
+}
+
+function resetGraph(){
+  if(traversalTimer) clearInterval(traversalTimer);
+  traversalTimer=null;
+  nodeColors={};
+  document.getElementById('g-algo').textContent='—';
+  document.getElementById('g-order').textContent='—';
+  drawGraph();
+}
+
+function drawGraph(){
+  const canvas=document.getElementById('graph-canvas');
+  const W=canvas.offsetWidth;canvas.width=W;canvas.height=330;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,W,330);
+  const g=GRAPHS[curGraph];
+  const H=330;
+
+  // draw edges
+  g.edges.forEach(([a,b])=>{
+    const na=g.nodes[a],nb=g.nodes[b];
+    ctx.strokeStyle='rgba(255,255,255,0.1)';ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.moveTo(na.x*W,na.y*H);ctx.lineTo(nb.x*W,nb.y*H);ctx.stroke();
+  });
+
+  // draw nodes
+  g.nodes.forEach(n=>{
+    const x=n.x*W,y=n.y*H;
+    const state=nodeColors[n.id]||'idle';
+    let fill,stroke,labelColor;
+    if(state==='current'){fill='#5b8af0';stroke='#5b8af0';labelColor='#fff';}
+    else if(typeof state==='number'){fill=compColors[state%compColors.length]+'33';stroke=compColors[state%compColors.length];labelColor=compColors[state%compColors.length];}
+    else{fill='#1a1e28';stroke='rgba(255,255,255,0.15)';labelColor='#8890a4';}
+    // glow for current
+    if(state==='current'){ctx.shadowColor='#5b8af0';ctx.shadowBlur=16;}
+    ctx.fillStyle=fill;ctx.strokeStyle=stroke;ctx.lineWidth=2;
+    ctx.beginPath();ctx.arc(x,y,20,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.shadowBlur=0;
+    ctx.fillStyle=labelColor;ctx.font='bold 14px Sora';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(n.lbl,x,y);
+  });
+
+  // component label for disconnected
+  if(curGraph==='disconnected'&&Object.keys(nodeColors).length===0){
+    ctx.fillStyle='#4a5270';ctx.font='12px Sora';ctx.textAlign='center';ctx.textBaseline='alphabetic';
+    ctx.fillText('3 isolated components — try BFS or DFS to see traversal restart',W/2,H-10);
+  }
+}
+
+function startTraversal(algo){
+  if(traversalTimer) clearInterval(traversalTimer);
+  nodeColors={};
+  const g=GRAPHS[curGraph];
+  const visited=new Set();
+  const order=[];
+  let compIdx=0;
+
+  if(algo==='bfs'){
+    document.getElementById('g-algo').textContent='BFS — Queue (FIFO)';
+    g.nodes.forEach(start=>{
+      if(!visited.has(start.id)){
+        const q=[start.id];visited.add(start.id);
+        while(q.length){
+          const cur=q.shift();order.push({id:cur,comp:compIdx});
+          g.adj[cur].forEach(nb=>{if(!visited.has(nb)){visited.add(nb);q.push(nb);}});
+        }
+        compIdx++;
+      }
+    });
+  } else {
+    document.getElementById('g-algo').textContent='DFS — Stack (Recursive)';
+    function dfsR(id,ci){
+      if(visited.has(id))return;
+      visited.add(id);order.push({id,comp:ci});
+      g.adj[id].forEach(nb=>dfsR(nb,ci));
+    }
+    g.nodes.forEach(n=>{if(!visited.has(n.id)){dfsR(n.id,compIdx);compIdx++;}});
+  }
+
+  let step=0;
+  traversalTimer=setInterval(()=>{
+    if(step>0){
+      const prev=order[step-1];
+      nodeColors[prev.id]=prev.comp; // mark with component colour
+    }
+    if(step<order.length){
+      nodeColors[order[step].id]='current';
+      drawGraph();
+      const labels=order.slice(0,step+1).map(o=>g.nodes[o.id].lbl);
+      document.getElementById('g-order').textContent=labels.join(' → ');
+      step++;
+    } else {
+      clearInterval(traversalTimer);traversalTimer=null;drawGraph();
+    }
+  },1000-parseInt(document.getElementById('speed').value));
+}
+
+setGraph('connected');
+</script>
+</body>
+</html>
