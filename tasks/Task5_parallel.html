@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task 5 — Parallel vs Distributed Algorithms</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0d0f14;--bg2:#13161e;--bg3:#1a1e28;--border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.15);--text:#e8eaf0;--muted:#8890a4;--accent:#f472b6;--accent2:#5b8af0;--accent3:#34d399;--accent4:#fb923c;--accent5:#a78bfa;--code-bg:#0a0c12;--radius:12px;--radius-sm:8px;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Sora',sans-serif;font-size:15px;line-height:1.7;}
+  .hero{text-align:center;padding:3.5rem 2rem 2.5rem;background:radial-gradient(ellipse at top,rgba(244,114,182,0.12) 0%,transparent 60%);}
+  .hero h1{font-size:clamp(1.6rem,4vw,2.8rem);font-weight:700;background:linear-gradient(135deg,#e8eaf0,#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .hero p{margin-top:.5rem;color:var(--muted);font-size:.95rem;}
+  .task-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--accent);background:rgba(244,114,182,0.12);border:1px solid rgba(244,114,182,0.3);border-radius:6px;padding:.2rem .6rem;margin-bottom:.75rem;}
+  section{max-width:960px;margin:0 auto;padding:2rem 1.5rem 3rem;}
+  .card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.5rem;}
+  .card h3{font-size:1rem;font-weight:600;margin-bottom:1rem;color:var(--text);}
+  .card p{color:var(--muted);font-size:14px;line-height:1.7;}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1.25rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6;color:#b0b8d0;margin:.75rem 0;}
+  .kw{color:#a78bfa;}.fn{color:#5b8af0;}.str{color:#34d399;}.cm{color:#4a5270;font-style:italic;}.num{color:#fb923c;}
+  .tbl-wrap{overflow-x:auto;margin:1rem 0;}
+  table{width:100%;border-collapse:collapse;font-size:14px;}
+  th{background:var(--bg3);color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.05em;padding:.65rem 1rem;text-align:left;border-bottom:1px solid var(--border2);}
+  td{padding:.65rem 1rem;border-bottom:1px solid var(--border);color:var(--text);}
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:rgba(255,255,255,0.02);}
+  .good{color:var(--accent3);}.bad{color:#f87171;}.med{color:var(--accent4);}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;}
+  .controls{display:flex;flex-wrap:wrap;gap:.75rem;align-items:center;margin-bottom:1.25rem;}
+  button{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);padding:.45rem 1rem;font-family:'Sora',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;}
+  button:hover{background:rgba(255,255,255,0.08);border-color:var(--accent);}
+  button.par{background:var(--accent2);border-color:var(--accent2);color:#fff;}
+  button.par:hover{opacity:.85;}
+  button.dist{background:var(--accent5);border-color:var(--accent5);color:#fff;}
+  button.dist:hover{opacity:.85;}
+  button.run{background:var(--accent3);border-color:var(--accent3);color:#0d0f14;}
+  button.run:hover{opacity:.85;}
+  input[type=range]{accent-color:var(--accent);min-width:80px;}
+  label{font-size:13px;color:var(--muted);}
+  canvas{display:block;width:100%;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--code-bg);}
+  .stats{display:flex;flex-wrap:wrap;gap:1rem;margin:1rem 0;}
+  .stat{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.75rem 1.25rem;}
+  .stat .lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+  .stat .val{font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:600;margin-top:.15rem;}
+  .chip{display:inline-block;border-radius:6px;padding:.15rem .55rem;font-size:12px;font-family:'JetBrains Mono',monospace;margin:.15rem;}
+  .chip.g{background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);color:var(--accent3);}
+  .chip.b{background:rgba(91,138,240,0.15);border:1px solid rgba(91,138,240,0.3);color:var(--accent2);}
+  .chip.p{background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.3);color:var(--accent5);}
+  .chip.o{background:rgba(251,146,60,0.1);border:1px solid rgba(251,146,60,0.3);color:var(--accent4);}
+  .chip.pk{background:rgba(244,114,182,0.1);border:1px solid rgba(244,114,182,0.3);color:var(--accent);}
+  .adv-list{list-style:none;padding:0;}
+  .adv-list li{padding:.32rem 0;font-size:14px;color:var(--muted);display:flex;gap:.5rem;}
+  .sec-title{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;border-bottom:1px solid var(--border);padding-bottom:.4rem;margin:1.2rem 0 .7rem;}
+  .mode-indicator{display:inline-flex;align-items:center;gap:.5rem;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:.4rem .85rem;font-size:13px;font-weight:600;}
+  .mode-dot{width:8px;height:8px;border-radius:50%;}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="task-badge">TASK 05</div>
+  <h1>Parallel vs Distributed Algorithms</h1>
+  <p>Architecture, execution model, advantages, limitations &amp; real-world applications</p>
+</div>
+
+<section>
+
+  <!-- Definitions -->
+  <div class="card">
+    <h3>Core Concepts</h3>
+    <div class="grid2">
+      <div>
+        <p class="sec-title">Parallel Algorithms</p>
+        <p>Run on a <strong>single machine</strong> with multiple cores or processors that share the same memory. Tasks are split into sub-tasks that execute simultaneously using threads or processes. Communication happens through shared variables in RAM — nanosecond latency.</p>
+        <div style="margin-top:.75rem">
+          <span class="chip b">Shared Memory</span>
+          <span class="chip g">Multi-core CPU / GPU</span>
+          <span class="chip o">OpenMP / pthreads</span>
+        </div>
+      </div>
+      <div>
+        <p class="sec-title">Distributed Algorithms</p>
+        <p>Run on <strong>multiple independent machines</strong> connected over a network. Each node has its own memory. Coordination is achieved through message passing (MPI, RPC). Communication adds network latency but enables near-unlimited horizontal scaling.</p>
+        <div style="margin-top:.75rem">
+          <span class="chip p">Message Passing</span>
+          <span class="chip pk">Multiple Machines</span>
+          <span class="chip g">MPI / MapReduce</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Simulation -->
+  <div class="card">
+    <h3>Live Simulation — Work Distribution</h3>
+    <div class="controls">
+      <button class="par" onclick="simMode('parallel')" id="btn-par">⚡ Parallel</button>
+      <button class="dist" onclick="simMode('distributed')" id="btn-dist">🌐 Distributed</button>
+      <label>Workers: <strong id="w-lbl">4</strong>
+        <input type="range" id="workers" min="2" max="8" value="4" oninput="document.getElementById('w-lbl').textContent=this.value;drawSim([])">
+      </label>
+      <button class="run" onclick="runSim()">▶ Run</button>
+      <button onclick="resetSim()">⟳ Reset</button>
+    </div>
+    <canvas id="parallel-canvas" height="280"></canvas>
+    <div class="stats" style="margin-top:1rem">
+      <div class="stat">
+        <div class="lbl">Mode</div>
+        <div class="val" id="p-mode" style="font-size:.95rem">
+          <span class="mode-indicator"><span class="mode-dot" id="p-dot" style="background:var(--accent2)"></span><span id="p-mode-txt">Parallel</span></span>
+        </div>
+      </div>
+      <div class="stat"><div class="lbl">Elapsed time</div><div class="val" id="p-time" style="color:var(--accent3)">— ms</div></div>
+      <div class="stat"><div class="lbl">Speedup vs sequential</div><div class="val" id="p-speedup" style="color:var(--accent5)">—</div></div>
+      <div class="stat"><div class="lbl">Efficiency</div><div class="val" id="p-eff" style="color:var(--accent4)">—</div></div>
+      <div class="stat"><div class="lbl">Comm. overhead</div><div class="val" id="p-overhead" style="color:var(--accent)">—</div></div>
+    </div>
+  </div>
+
+  <!-- Code -->
+  <div class="card">
+    <h3>Python Implementation Examples</h3>
+    <div class="grid2">
+      <div>
+        <p class="sec-title">Parallel — Shared Memory (multiprocessing)</p>
+        <pre><span class="kw">from</span> multiprocessing <span class="kw">import</span> Pool
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="kw">def</span> <span class="fn">compute_chunk</span>(chunk):
+    <span class="cm"># Each process works on its slice</span>
+    <span class="kw">return</span> <span class="fn">sum</span>(x**<span class="num">2</span> <span class="kw">for</span> x <span class="kw">in</span> chunk)
+
+<span class="kw">def</span> <span class="fn">parallel_sum_of_squares</span>(data, workers=<span class="num">4</span>):
+    chunks = np.<span class="fn">array_split</span>(data, workers)
+    <span class="kw">with</span> <span class="fn">Pool</span>(workers) <span class="kw">as</span> pool:
+        <span class="cm"># All workers run simultaneously</span>
+        results = pool.<span class="fn">map</span>(compute_chunk, chunks)
+    <span class="kw">return</span> <span class="fn">sum</span>(results)
+
+data = <span class="fn">list</span>(<span class="fn">range</span>(<span class="num">10_000_000</span>))
+total = <span class="fn">parallel_sum_of_squares</span>(data)
+
+<span class="cm"># With 4 cores: ~4× speedup (ideal)</span>
+<span class="cm"># Shared memory → no network cost</span></pre>
+      </div>
+      <div>
+        <p class="sec-title">Distributed — Message Passing (MPI)</p>
+        <pre><span class="kw">from</span> mpi4py <span class="kw">import</span> MPI
+
+comm = MPI.COMM_WORLD
+rank = comm.<span class="fn">Get_rank</span>()   <span class="cm"># node ID</span>
+size = comm.<span class="fn">Get_size</span>()   <span class="cm"># total nodes</span>
+
+<span class="cm"># Master node prepares data</span>
+data = <span class="kw">None</span>
+<span class="kw">if</span> rank == <span class="num">0</span>:
+    data = <span class="fn">split_data</span>(size)
+
+<span class="cm"># Scatter chunks to all nodes</span>
+chunk = comm.<span class="fn">scatter</span>(data, root=<span class="num">0</span>)
+
+<span class="cm"># Each node computes independently</span>
+local = <span class="fn">sum</span>(x**<span class="num">2</span> <span class="kw">for</span> x <span class="kw">in</span> chunk)
+
+<span class="cm"># Gather results at master</span>
+total = comm.<span class="fn">reduce</span>(local,
+              op=MPI.SUM, root=<span class="num">0</span>)
+
+<span class="cm"># Network overhead adds latency</span>
+<span class="cm"># But scales to 1000s of machines</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Full comparison table -->
+  <div class="card">
+    <h3>Full Comparison</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Dimension</th><th>Parallel</th><th>Distributed</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Architecture</strong></td><td>Single machine, shared memory (SMP)</td><td>Multiple independent machines via network</td></tr>
+          <tr><td><strong>Communication</strong></td><td class="good">Direct memory access — nanoseconds</td><td class="bad">Network messages — milliseconds</td></tr>
+          <tr><td><strong>Execution model</strong></td><td>Multiple threads/processes on one OS</td><td>Autonomous processes on separate OSes</td></tr>
+          <tr><td><strong>Synchronisation</strong></td><td>Mutexes, semaphores, barriers</td><td>Consensus protocols, message ACKs</td></tr>
+          <tr><td><strong>Fault tolerance</strong></td><td class="bad">Single point of failure (one machine)</td><td class="good">Partial failure tolerated — nodes are redundant</td></tr>
+          <tr><td><strong>Scalability</strong></td><td class="med">Limited by CPU core count (~128 max)</td><td class="good">Horizontally unlimited — add machines freely</td></tr>
+          <tr><td><strong>Latency</strong></td><td class="good">Near-zero (shared RAM)</td><td class="bad">Significant network overhead</td></tr>
+          <tr><td><strong>Consistency</strong></td><td class="good">Easy — all see same memory</td><td class="bad">Hard — CAP theorem trade-offs</td></tr>
+          <tr><td><strong>Programming model</strong></td><td>OpenMP, pthreads, Python multiprocessing, CUDA</td><td>MPI, Apache Spark, Hadoop MapReduce</td></tr>
+          <tr><td><strong>Best for</strong></td><td>CPU-intensive tasks on a single node</td><td>Big data, geographically distributed systems</td></tr>
+          <tr><td><strong>Examples</strong></td><td>Rendering, video encoding, ML training (GPU)</td><td>Web search, blockchain, cloud databases</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Amdahl's Law -->
+  <div class="card">
+    <h3>Amdahl's Law — Theoretical Speedup Limit</h3>
+    <p>Amdahl's Law states that the maximum speedup from parallelism is limited by the sequential fraction of the program:</p>
+    <pre><span class="cm"># Amdahl's Law</span>
+<span class="cm"># S = speedup, p = parallel fraction, n = processors</span>
+
+<span class="kw">def</span> <span class="fn">amdahls_speedup</span>(p, n):
+    <span class="cm"># p = 0.9 means 90% of work is parallelisable</span>
+    <span class="kw">return</span> <span class="num">1</span> / ((<span class="num">1</span> - p) + p / n)
+
+<span class="kw">for</span> n <span class="kw">in</span> [<span class="num">1</span>, <span class="num">2</span>, <span class="num">4</span>, <span class="num">8</span>, <span class="num">16</span>, <span class="num">1000</span>]:
+    s = <span class="fn">amdahls_speedup</span>(p=<span class="num">0.9</span>, n=n)
+    <span class="fn">print</span>(<span class="str">f"n={n:5d}: speedup = {s:.2f}×"</span>)
+
+<span class="cm"># n=    1: speedup = 1.00×</span>
+<span class="cm"># n=    2: speedup = 1.82×</span>
+<span class="cm"># n=    4: speedup = 3.08×</span>
+<span class="cm"># n=    8: speedup = 4.71×</span>
+<span class="cm"># n=   16: speedup = 6.40×</span>
+<span class="cm"># n= 1000: speedup = 9.91× (max ≈ 10×)</span>
+<span class="cm"># Even with infinite processors, max = 1/(1-p) = 10×</span></pre>
+    <p style="margin-top:.75rem;">This is why distributed systems pursue different tasks per machine (microservices, MapReduce) rather than just parallelising one task — to escape Amdahl's ceiling.</p>
+    <div style="margin-top:1rem">
+      <span class="chip b">Parallel fraction p = 0.9</span>
+      <span class="chip g">Theoretical max speedup = 10×</span>
+      <span class="chip o">Sequential bottleneck = 10%</span>
+    </div>
+  </div>
+
+  <!-- Real-world -->
+  <div class="card">
+    <h3>Real-World Applications</h3>
+    <div class="grid2">
+      <div>
+        <p class="sec-title">Parallel Algorithms in Practice</p>
+        <ul class="adv-list">
+          <li>→ <strong>GPU rendering</strong> — thousands of shader cores working in parallel</li>
+          <li>→ <strong>Video encoding</strong> — frames processed simultaneously</li>
+          <li>→ <strong>Scientific simulation</strong> — physics, fluid dynamics on HPC clusters</li>
+          <li>→ <strong>Machine learning</strong> — matrix operations parallelised via CUDA</li>
+          <li>→ <strong>Parallel merge sort</strong> — divide array, sort halves concurrently</li>
+        </ul>
+      </div>
+      <div>
+        <p class="sec-title">Distributed Algorithms in Practice</p>
+        <ul class="adv-list">
+          <li>→ <strong>Google Search</strong> — MapReduce across thousands of servers</li>
+          <li>→ <strong>Blockchain</strong> — consensus across globally distributed nodes</li>
+          <li>→ <strong>Apache Spark</strong> — big data analytics on clusters</li>
+          <li>→ <strong>CDNs</strong> — geographically distributed content delivery</li>
+          <li>→ <strong>Distributed databases</strong> — Cassandra, DynamoDB, CockroachDB</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<script>
+let simType='parallel', simTimer=null, simStart=0;
+
+function simMode(type){
+  simType=type;
+  document.getElementById('btn-par').className=type==='parallel'?'par':'';
+  document.getElementById('btn-dist').className=type==='distributed'?'dist':'';
+  document.getElementById('p-mode-txt').textContent=type==='parallel'?'Parallel':'Distributed';
+  document.getElementById('p-dot').style.background=type==='parallel'?'var(--accent2)':'var(--accent5)';
+  document.getElementById('p-overhead').textContent=type==='parallel'?'~0 ns':'~50 ms';
+  resetSim();
+}
+
+function resetSim(){
+  if(simTimer) clearInterval(simTimer);
+  simTimer=null;
+  ['p-time','p-speedup','p-eff'].forEach(id=>document.getElementById(id).textContent='—');
+  drawSim([]);
+}
+
+function drawSim(progress){
+  const canvas=document.getElementById('parallel-canvas');
+  const W=canvas.offsetWidth;canvas.width=W;canvas.height=280;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,W,280);
+  const workers=parseInt(document.getElementById('workers').value);
+  const barH=30,gap=8;
+  const labelW=110,rightPad=60;
+  const bw=W-labelW-rightPad;
+  const totalH=workers*(barH+gap);
+  const offsetY=(280-totalH)/2;
+
+  const isParallel=simType==='parallel';
+  const barColor=isParallel?'#5b8af0':'#a78bfa';
+
+  for(let i=0;i<workers;i++){
+    const y=offsetY+i*(barH+gap);
+    // track background
+    ctx.fillStyle='#1a1e28';ctx.strokeStyle='rgba(255,255,255,0.06)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.roundRect(labelW,y,bw,barH,4);ctx.fill();ctx.stroke();
+
+    const p=Math.max(0,progress[i]||0);
+    if(p>0){
+      const fillW=(bw-2)*Math.min(p,1);
+      // glow fill
+      if(p<1){
+        const grad=ctx.createLinearGradient(labelW,0,labelW+fillW,0);
+        grad.addColorStop(0,barColor+'66');
+        grad.addColorStop(1,barColor+'cc');
+        ctx.fillStyle=grad;
+      } else {
+        ctx.fillStyle=barColor+'99';
+      }
+      ctx.beginPath();ctx.roundRect(labelW+1,y+1,Math.max(fillW,2),barH-2,3);ctx.fill();
+      // leading edge glow
+      if(p<1&&p>0){
+        ctx.fillStyle=barColor;
+        ctx.beginPath();ctx.roundRect(labelW+fillW-3,y+1,4,barH-2,2);ctx.fill();
+      }
+    }
+
+    // label
+    ctx.fillStyle='#8890a4';ctx.font='12px Sora';ctx.textAlign='right';ctx.textBaseline='middle';
+    ctx.fillText(isParallel?`Core ${i+1}`:`Node ${i+1}`,labelW-10,y+barH/2);
+
+    // pct
+    if(p>0){
+      ctx.fillStyle=p>=1?barColor:'#e8eaf0';
+      ctx.font='bold 11px JetBrains Mono';ctx.textAlign='left';
+      ctx.fillText(`${Math.min(100,Math.round(p*100))}%`,labelW+bw+8,y+barH/2);
+    }
+  }
+
+  // Network arrows for distributed
+  if(!isParallel&&progress.some(p=>p>0)){
+    const arrowY=offsetY+totalH+16;
+    ctx.strokeStyle='rgba(167,139,250,0.35)';ctx.lineWidth=1;ctx.setLineDash([4,4]);
+    ctx.beginPath();ctx.moveTo(labelW,arrowY);ctx.lineTo(labelW+bw,arrowY);ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle='#a78bfa66';ctx.font='11px Sora';ctx.textAlign='center';ctx.textBaseline='alphabetic';
+    ctx.fillText('↕ network message-passing overhead between nodes',W/2,arrowY+16);
+  }
+
+  if(progress.length===0){
+    ctx.fillStyle='#4a5270';ctx.font='13px Sora';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(`Press ▶ Run to simulate ${workers} ${isParallel?'cores':'nodes'} working in ${simType} mode`,W/2,260);
+  }
+}
+
+function runSim(){
+  if(simTimer) clearInterval(simTimer);
+  const workers=parseInt(document.getElementById('workers').value);
+  const overhead=simType==='distributed'?1.45:1.0;
+  const steps=80;
+  const progress=new Array(workers).fill(0);
+  simStart=performance.now();
+  let tick=0;
+
+  simTimer=setInterval(()=>{
+    tick++;
+    for(let i=0;i<workers;i++){
+      // distributed adds per-node startup lag
+      const lag=simType==='distributed'? i*0.04 : 0;
+      progress[i]=Math.min(1,(tick/(steps*overhead))-lag);
+    }
+    drawSim(progress);
+    const elapsed=Math.round(performance.now()-simStart);
+    document.getElementById('p-time').textContent=elapsed+' ms';
+
+    if(tick>=Math.round(steps*overhead)){
+      clearInterval(simTimer);simTimer=null;
+      const total=Math.round(performance.now()-simStart);
+      // synthetic sequential time
+      const seqTime=total*workers*(simType==='parallel'?0.92:0.7);
+      const speedup=(seqTime/total).toFixed(2);
+      const eff=((speedup/workers)*100).toFixed(0);
+      document.getElementById('p-time').textContent=total+' ms';
+      document.getElementById('p-speedup').textContent=speedup+'×';
+      document.getElementById('p-eff').textContent=eff+'%';
+    }
+  },25);
+}
+
+simMode('parallel');
+</script>
+</body>
+</html>
